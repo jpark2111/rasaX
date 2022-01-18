@@ -1,5 +1,7 @@
 FROM rasa/rasa-sdk:2.8.2
 
+WORKDIR /app
+
 COPY actions /app/actions
 
 USER root

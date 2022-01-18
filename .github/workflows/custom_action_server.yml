@@ -8,7 +8,7 @@ on:
 
 jobs:
   my_first_job:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout git repository
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
           # Docker image name.
           docker_image_name: 'jpark2111/wealthbuild_rasa_action_server'
           # Docker image tag.
-          docker_image_tag: 1.17.2022
+          docker_image_tag: 1.18.2022
           # Push a docker image to the registry. If `False` the user can add manual extra steps in their workflow which use the built image.
           docker_registry_push: true
           # Path to a custom Dockerfile.
