@@ -43,3 +43,7 @@ stories:
   steps:
   - intent: start_savings_session
   - action: utter_start_savings_session
+- story: hysa story
+  steps:
+  - intent: open_hysa
+  - action: utter_open_hysa

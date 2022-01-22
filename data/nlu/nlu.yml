@@ -617,6 +617,19 @@ nlu:
     - What's your money question about today?
     - how can I help you with your money today?
     - what money question do you have today?
+- intent: start_savings_session
+  examples: |
+    - savings account
+    - i want to save money
+    - open a savings account
+    - savings
+- intent: open_hysa
+  examples: |
+    - open savings account
+    - emergency savings
+    - open savings
+    - open emergency savings
+    - Open HYSA
 - synonym: credit
   examples: |
     - credit card
