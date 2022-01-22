@@ -240,6 +240,7 @@ nlu:
     - welcome
     - howdy
     - good day
+    - hola
 - intent: inform
   examples: |
     - $10

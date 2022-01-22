@@ -7,6 +7,8 @@ session_config:
 intents:
 - check_human:
     use_entities: true
+- start_savings_session:
+    use_entities: true
 - transfer_money:
     use_entities: []
 - inform:
