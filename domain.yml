@@ -355,6 +355,15 @@ responses:
     - payload: /start_investing_session
       title: Investing
     text: 'I can answer questions about:'
+  utter_start_savings_session:
+  - buttons:
+    - payload: /open_hysa
+      title: Open HYSA
+    - payload: /open_cd
+      title: Open a CD
+    text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that is usually put into a High Yield Savings Account, a.k.a. HYSA. These types of accounts give you some interest for holding your cash. So how much should you have in an emergency savings? You should aim to have 3-6 months of your monthly salary. That can be a lot to start off with so the first goal is to have at least $1000. What do you want to do today?
+  utter_open_hysa:
+  - text: Please click this link
 actions:
 - action_session_start
 - action_restart
