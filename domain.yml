@@ -285,7 +285,8 @@ responses:
       payload: /start_savings_session
     - title: Investing
       payload: /start_investing_session
-    
+  utter_start_savings_session:
+  - text: Great! let's start savings
 actions:
 - action_session_start
 - action_restart
