@@ -1,31 +1,25 @@
 version: "2.0"
-
 stories:
-
 - story: say ok when user affirms after utter_help
   steps:
   - action: utter_help
   - intent: affirm
   - action: utter_ok
-
 - story: say ok when user affirms after action_show_balance
   steps:
   - action: action_show_balance
   - intent: affirm
   - action: utter_ok
-
 - story: say ok when user affirms after action_show_recipients
   steps:
   - action: action_show_recipients
   - intent: affirm
   - action: utter_ok
-  
 - story: say ok when user affirms after action_show_transfer_charge
   steps:
   - action: action_show_transfer_charge
   - intent: affirm
   - action: utter_ok
-
 - story: story_ask name and remember it
   steps:
   - intent: request_names
@@ -45,3 +39,11 @@ stories:
   - action: utter_submit
   - action: utter_slots_values
   - action: action_insert_name
+- story: savings story
+  steps:
+  - intent: start_savings_session
+  - action: utter_start_savings_session
+- story: hysa story
+  steps:
+  - intent: open_hysa
+  - action: utter_open_hysa
