@@ -349,14 +349,14 @@ responses:
   utter_slots_values:
   - text: I'll remember that your name is {first_name} {last_name}!
   utter_prompt:
-  - buttons:
-    - payload: /start_budgeting_session
-      title: Budgeting
-    - payload: /start_savings_session
-      title: Saving
-    - payload: /start_investing_session
-      title: Investing
-    text: 'I can answer questions about:'
+  - text: 'I can answer questions about:'
+    buttons:
+    - title: Budgeting
+      payload: /start_budgeting_session
+    - title: Saving
+      payload: /start_savings_session
+    - title: Investing
+      payload: /start_investing_session
   utter_start_savings_session:
   - buttons:
     - payload: /open_hysa
