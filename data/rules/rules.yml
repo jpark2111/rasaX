@@ -133,5 +133,5 @@ rules:
   - slot_was_set:
     - requested_slot: null
   - action: utter_submit
-  - action: utter_slots_values
-  - action: action_insert_name
+  - action: utter_full_name
+  # - action: action_insert_name

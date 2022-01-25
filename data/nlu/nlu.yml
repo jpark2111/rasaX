@@ -91,10 +91,6 @@ nlu:
     - How much do I have on that account?
     - What's the [balance](amount-of-money) on that account?
     - How much money is left on that account?
-    - what is my account [balance](amount-of-money)
-    - what's my account [balance](amount-of-money)?
-    - what's my account [balance](amount-of-money)
-    - whats my account [balance](amount-of-money)
     - what is my [bank](account_type) account [balance](amount-of-money)
     - what's my [bank](account_type) account [balance](amount-of-money)?
     - what's my [bank](account_type) account [balance](amount-of-money)
@@ -630,6 +626,14 @@ nlu:
     - open savings
     - open emergency savings
     - Open HYSA
+- intent: mx_accountbalance
+  examples: |
+    - account balance
+    - what's my account balance
+    - what's my account balance?
+    - what's my balance
+    - what's my balance?
+    - my account balance
 - synonym: credit
   examples: |
     - credit card

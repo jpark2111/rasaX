@@ -10,10 +10,8 @@ jobs:
   my_first_job:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout git repository
-        uses: actions/checkout@v2
       - name: Action Server
-        uses: RasaHQ/action-server-gha@main
+        uses: jpark2111/rasaX@main
         with:
           # Path to the directory with actions.
           actions_directory: ./actions
