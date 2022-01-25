@@ -37,8 +37,8 @@ stories:
     - requested_slot: null
   - active_loop: null
   - action: utter_submit
-  - action: utter_slots_values
-  - action: action_insert_name
+  - action: utter_full_name
+  # - action: action_insert_name
 - story: savings story
   steps:
   - intent: start_savings_session
@@ -47,3 +47,7 @@ stories:
   steps:
   - intent: open_hysa
   - action: utter_open_hysa
+- story: draft_accountbalance
+  steps:
+  - intent: mx_accountbalance
+  - action: action_mx_accountbalance

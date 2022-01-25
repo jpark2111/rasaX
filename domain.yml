@@ -59,6 +59,7 @@ intents:
     use_entities: true
 - prompt:
     use_entities: true
+- mx_accountbalance
 entities:
 - amount-of-money
 - credit_card
@@ -346,7 +347,7 @@ responses:
   - text: What is your first name?
   utter_submit:
   - text: Ok, Thanks!
-  utter_slots_values:
+  utter_full_name:
   - text: I'll remember that your name is {first_name} {last_name}!
   utter_prompt:
   - text: 'I can answer questions about:'
@@ -366,6 +367,8 @@ responses:
     text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that is usually put into a High Yield Savings Account, a.k.a. HYSA. These types of accounts give you some interest for holding your cash. So how much should you have in an emergency savings? You should aim to have 3-6 months of your monthly salary. That can be a lot to start off with so the first goal is to have at least $1000. What do you want to do today?
   utter_open_hysa:
   - text: 'Please click this link: https://www.marcus.com/us/en'
+  utter_mx_accountbalance:
+  - text: 'Hey {first_name}, here is your account balance ${mx_balance}.'
 actions:
 - action_session_start
 - action_restart
@@ -384,6 +387,7 @@ actions:
 - action_switch_forms_affirm
 - action_switch_back_ask
 - action_insert_name
+- action_mx_accountbalance
 - validate_cc_payment_form
 - validate_transfer_money_form
 - validate_transaction_search_form

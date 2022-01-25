@@ -4,6 +4,7 @@ from typing import Dict, Text, Any, List
 import logging
 from dateutil import parser
 import sqlalchemy as sa
+import actions.service as service
 
 from rasa_sdk.interfaces import Action
 from rasa_sdk.events import (
@@ -921,7 +922,7 @@ class ActionSwitchBackAsk(Action):
         return [SlotSet("previous_form_name", None)]
 
 
-class AskForSlotAction(Action):
+class AskForLastNameAction(Action):
     def name(self) -> Text:
         return "action_ask_last_name"
 
@@ -932,6 +933,21 @@ class AskForSlotAction(Action):
         first_name = tracker.get_slot("first_name")
         dispatcher.utter_message(text=f"So {first_name}, what is your last name?")
 
+        return []
+
+class ActionMxBalance(Action):
+    def name(self) -> Text:
+        return "action_mx_accountbalance"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+
+        first_name = tracker.get_slot("first_name")
+
+        balance = service.get_mx_balance()
+       
+        dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name)
         return []
 
 
