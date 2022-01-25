@@ -10,6 +10,8 @@ jobs:
   my_first_job:
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
       - name: Action Server
         uses: jpark2111/rasaX@main
         with:
