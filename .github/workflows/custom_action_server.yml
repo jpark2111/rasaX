@@ -7,11 +7,16 @@ on:
     - 'actions/**'
 
 jobs:
-  my_first_job:
+  build_and_deploy:
     runs-on: ubuntu-20.04
+    name: Build Action Server image and upgrade Rasa X deployment
     steps:
-      - name: Action Server
-        uses: jpark2111/rasaX@main
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - id: action_server
+        name: Build an action server with a custom actions
+        uses: RasaHQ/action-server-gha@master
         with:
           # Path to the directory with actions.
           actions_directory: ./actions
@@ -26,7 +31,7 @@ jobs:
           # Docker image name.
           docker_image_name: 'jpark2111/wealthbuild_rasa_action_server'
           # Docker image tag.
-          docker_image_tag: 1.18.2022
+          docker_image_tag: ${{ github.sha }}
           # Push a docker image to the registry. If `False` the user can add manual extra steps in their workflow which use the built image.
           docker_registry_push: true
           # Path to a custom Dockerfile.
