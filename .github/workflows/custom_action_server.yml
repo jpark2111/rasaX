@@ -23,7 +23,7 @@ jobs:
           # Path to the requirements.txt file.
           requirements_file: ./actions/requirements-actions.txt
           # Name of the docker registry which the Docker image should be published to.
-          docker_registry: hub.docker.com
+          # docker_registry: hub.docker.com
           # Login name for the Docker registry.
           docker_registry_login: ${{ secrets.DOCKER_HUB_LOGIN }}
           # Password for the Docker registry.
