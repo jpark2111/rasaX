@@ -8,8 +8,8 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-20.04
-    name: Build Action Server image and upgrade Rasa X deployment
+    runs-on: ubuntu-latest
+    name: Build Action Server image
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -18,23 +18,11 @@ jobs:
         name: Build an action server with a custom actions
         uses: RasaHQ/action-server-gha@main
         with:
-          # Path to the directory with actions.
-          actions_directory: ./actions
-          # Path to the requirements.txt file.
+          actions_directory: ./actions 
           requirements_file: ./actions/requirements-actions.txt
-          # Name of the docker registry which the Docker image should be published to.
-          # docker_registry: hub.docker.com
-          # Login name for the Docker registry.
           docker_registry_login: ${{ secrets.DOCKER_HUB_LOGIN }}
-          # Password for the Docker registry.
           docker_registry_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          # Docker image name.
           docker_image_name: 'jpark2111/wealthbuild_rasa_action_server'
-          # Docker image tag.
-          docker_image_tag: ${{ github.sha }}
-          # Push a docker image to the registry. If `False` the user can add manual extra steps in their workflow which use the built image.
+          docker_image_tag: 'latest'
           docker_registry_push: true
-          # Path to a custom Dockerfile.
           dockerfile: Dockerfile
-          # Version of the Rasa SDK which should be used to build the image.
-          rasa_sdk_version: latest
