@@ -936,20 +936,20 @@ class AskForLastNameAction(Action):
 
         return []
 
-# class ActionMxBalance(Action):
-#     def name(self) -> Text:
-#         return "action_mx_accountbalance"
+class ActionMxBalance(Action):
+    def name(self) -> Text:
+        return "action_mx_accountbalance"
 
-#     def run(
-#         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
-#     ) -> List[EventType]:
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
 
-#         first_name = tracker.get_slot("first_name")
+        first_name = tracker.get_slot("first_name")
 
-#         balance = service.get_mx_balance()
+        balance = service.get_mx_balance()
        
-#         dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name)
-#         return []
+        dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name)
+        return []
 
 
 # class ActionInsertName(Action):
