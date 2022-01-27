@@ -5,7 +5,7 @@ import logging
 from dateutil import parser
 import sqlalchemy as sa
 import actions.service as service
-# import pyodbc
+import pyodbc
 
 from rasa_sdk.interfaces import Action
 from rasa_sdk.events import (
@@ -44,14 +44,14 @@ create_database(ENGINE, PROFILE_DB_NAME)
 
 profile_db = ProfileDB(ENGINE)
 
-# driver = 'ODBC Driver 17 for SQL Server'
-# server = 'rasa-test.database.windows.net'
-# database = 'rasa-test'
-# username = 'wealthBuild'
-# password = 'azureSql!23'
-# cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+driver = 'ODBC Driver 17 for SQL Server'
+server = 'rasa-test.database.windows.net'
+database = 'rasa-test'
+username = 'wealthBuild'
+password = 'azureSql!23'
+cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
-# cursor = cnxn.cursor()
+cursor = cnxn.cursor()
 
 NEXT_FORM_NAME = {
     "pay_cc": "cc_payment_form",
@@ -952,17 +952,17 @@ class ActionMxBalance(Action):
         return []
 
 
-# class ActionInsertName(Action):
-#     def name(self) -> Text:
-#         return "action_insert_name"
+class ActionInsertName(Action):
+    def name(self) -> Text:
+        return "action_insert_name"
 
-#     def run(
-#         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
-#     ) -> List[EventType]:
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
 
-#         first_name = tracker.get_slot("first_name")
-#         last_name = tracker.get_slot("last_name")
-#         cursor.execute("""INSERT INTO Person (first_name, last_name) VALUES (?,?)""",
-#                     f"{first_name}", f"{last_name}").rowcount
-#         cnxn.commit()
-#         return []
+        first_name = tracker.get_slot("first_name")
+        last_name = tracker.get_slot("last_name")
+        cursor.execute("""INSERT INTO Person (first_name, last_name) VALUES (?,?)""",
+                    f"{first_name}", f"{last_name}").rowcount
+        cnxn.commit()
+        return []
