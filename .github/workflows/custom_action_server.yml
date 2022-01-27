@@ -5,6 +5,7 @@ on:
     - 'main'
     paths:
     - 'actions/**'
+    - '.github/workflows/custom_action_server.yml'
 
 jobs:
   build_and_deploy:
@@ -24,5 +25,4 @@ jobs:
           docker_registry_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           docker_image_name: 'jpark2111/wealthbuild_rasa_action_server'
           docker_image_tag: 'latest'
-          docker_registry_push: true
-          dockerfile: Dockerfile
+          dockerfile: 'actions/Dockerfile'
