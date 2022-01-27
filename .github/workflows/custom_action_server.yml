@@ -19,10 +19,10 @@ jobs:
         name: Build an action server with a custom actions
         uses: RasaHQ/action-server-gha@main
         with:
-          actions_directory: './actions'
-          requirements_file: './actions/requirements-actions.txt'
+          actions_directory: 'actions'
+          requirements_file: 'actions/requirements-actions.txt'
           docker_registry_login: ${{ secrets.DOCKER_HUB_LOGIN }}
           docker_registry_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           docker_image_name: 'jpark2111/wealthbuild_rasa_action_server'
           docker_image_tag: 'latest'
-          dockerfile: './actions/Dockerfile'
+          dockerfile: 'actions/Dockerfile'
