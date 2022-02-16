@@ -16,6 +16,8 @@ rules:
   steps:
   - intent: greet
   - action: utter_greet
+  - action: utter_ask_nickname_rememberit
+  - action: utter_prompt
 - rule: say goodbye
   steps:
   - intent: goodbye
