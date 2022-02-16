@@ -113,3 +113,17 @@ rules:
     - requested_slot: null
   - action: utter_submit
   - action: utter_full_name
+- rule: Activate Nickname Form
+  steps:
+  - action: utter_name_prompt
+  - action: nickname_form
+  - active_loop: nickname_form
+- rule: Submit Nickname Form
+  condition:
+  - active_loop: nickname_form
+  steps:
+  - action: nickname_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_nickname
