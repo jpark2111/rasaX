@@ -1,4 +1,4 @@
--r actions/requirements-actions.txt
+
 
 rasa[spacy]==2.8.9
 
