@@ -33,8 +33,8 @@ intents:
     use_entities: []
 - check_balance:
     use_entities:
-    - credit_card
     - account_type
+    - credit_card
 - check_earnings:
     use_entities: []
 - request_names:
@@ -59,7 +59,8 @@ intents:
     use_entities: true
 - prompt:
     use_entities: true
-- mx_accountbalance
+- mx_accountbalance:
+    use_entities: true
 entities:
 - amount-of-money
 - credit_card
@@ -321,7 +322,7 @@ responses:
   - text: These are your known recpients to whom you can send money:{formatted_recipients}
   utter_greet:
   - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
-    text: Hi! I'm Yoli your financial guru, here to help you make smarter financial decisions.
+    text: Hi! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
   - text: Hola, I am Yoli, your smart financial assistant.
   utter_ask_handoff:
   - text: It looks like you want to be transferred to a human agent.
@@ -348,27 +349,41 @@ responses:
   utter_submit:
   - text: Ok, Thanks!
   utter_full_name:
-  - text: I'll remember that your name is {first_name} {last_name}!
+  - image: https://media.giphy.com/media/YoeipjdqpYPvcTGnMq/giphy-downsized.gif
+    text: Great to meet you  {first_name}!
   utter_prompt:
-  - text: 'I can answer questions about:'
-    buttons:
-    - title: Budgeting
-      payload: /start_budgeting_session
-    - title: Saving
-      payload: /start_savings_session
-    - title: Investing
-      payload: /start_investing_session
-  utter_start_savings_session:
   - buttons:
-    - payload: /open_hysa
-      title: Open HYSA
-    - payload: /open_cd
-      title: Open a CD
-    text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that is usually put into a High Yield Savings Account, a.k.a. HYSA. These types of accounts give you some interest for holding your cash. So how much should you have in an emergency savings? You should aim to have 3-6 months of your monthly salary. That can be a lot to start off with so the first goal is to have at least $1000. What do you want to do today?
+    - payload: /start_budgeting_session
+      title: Budgeting
+    - payload: /start_savings_session
+      title: Saving
+    - payload: /start_investing_session
+      title: Investing
+    text: 'I can answer questions about:'
+  utter_start_savings_session:
+  - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
+    text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
   utter_open_hysa:
   - text: 'Please click this link: https://www.marcus.com/us/en'
   utter_mx_accountbalance:
   - text: 'Hey {first_name}, here is your account balance ${mx_balance}.'
+  utter_savings_amount:
+  - text: How much do you want to start saving?
+  utter_savings_savings_timeline:
+  - text: Great, so  how long many months do you need to save this amount?
+  utter_savings_goal:
+  - text: Cool, so you will need to save {currency} a month to hit your goal.
+  utter_name_prompt:
+  - text: Before we get started, what shall I call you?
+  utter_nickname:
+  - buttons:
+    - payload: ''
+      title: Savings
+    - payload: ''
+      title: Investing
+    - payload: ''
+      title: Budgeting
+    text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
 actions:
 - action_session_start
 - action_restart
@@ -397,6 +412,10 @@ forms:
       first_name:
       - type: from_text
       last_name:
+      - type: from_text
+  nickname_form:
+    required_slots:
+      nickname:
       - type: from_text
   cc_payment_form:
     required_slots:

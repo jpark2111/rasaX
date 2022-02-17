@@ -341,8 +341,6 @@ nlu:
     - all of them
     - Darren Smith
     - Percy
-    - percy donald
-    - danIelle smilanich
     - [Gringtos](credit_card)
 - intent: pay_cc
   examples: |
@@ -419,6 +417,7 @@ nlu:
     - What did I spend at [Costco](vendor_name) last month?
     - what did I spend at [target](vendor_name) last month
     - where did I spend the most money last month?
+    - what did I spend at [Target](vendor_name)
 - intent: thankyou
   examples: |
     - thank you goodbye
@@ -524,11 +523,9 @@ nlu:
     - can I send money to anyone?
     - who exactly am I able to send money to
     - if I want to transfer money can i send it to anyone
-    - show me my money sending list
 - intent: help
   examples: |
     - help
-    - what can you do?
     - what can I ask you?
     - what do you do?
     - what can you help me with?
@@ -547,6 +544,12 @@ nlu:
     - help pls
     - help?
     - hep me
+- intent: prompt
+  examples: |
+    - what can you do?
+    - What's your money question about today?
+    - how can I help you with your money today?
+    - what money question do you have today?
 - intent: human_handoff
   examples: |
     - handoff
@@ -600,13 +603,8 @@ nlu:
     - ofif fsdfafsfs
 - intent: request_names
   examples: |
-    - give name
+    - What's your name?
     - do you know my name?
-- intent: prompt
-  examples: |
-    - What's your money question about today?
-    - how can I help you with your money today?
-    - what money question do you have today?
 - intent: start_savings_session
   examples: |
     - savings account

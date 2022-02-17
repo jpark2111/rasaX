@@ -38,11 +38,6 @@ stories:
   - active_loop: null
   - action: utter_submit
   - action: utter_full_name
-  # - action: action_insert_name
-- story: savings story
-  steps:
-  - intent: start_savings_session
-  - action: utter_start_savings_session
 - story: hysa story
   steps:
   - intent: open_hysa
@@ -51,3 +46,17 @@ stories:
   steps:
   - intent: mx_accountbalance
   - action: action_mx_accountbalance
+- story: ask_nickname_rememberit
+  steps:
+  - action: utter_greet
+  - action: utter_name_prompt
+  - action: nickname_form
+  - active_loop: nickname_form
+  - slot_was_set:
+    - requested_slot: nickname
+  - slot_was_set:
+    - nickname: vincent
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_nickname
