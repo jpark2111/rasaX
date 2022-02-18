@@ -356,15 +356,6 @@ responses:
   utter_full_name:
   - image: https://media.giphy.com/media/YoeipjdqpYPvcTGnMq/giphy-downsized.gif
     text: Great to meet you  {first_name}!
-  utter_prompt:
-  - buttons:
-    - payload: /start_budgeting_session
-      title: Budgeting
-    - payload: /start_savings_session
-      title: Saving
-    - payload: /start_investing_session
-      title: Investing
-    text: 'I can answer questions about:'
   utter_start_savings_session:
   - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
     text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
@@ -382,11 +373,11 @@ responses:
   - text: Before we get started, what shall I call you?
   utter_nickname:
   - buttons:
-    - payload: ''
+    - payload: /start_savings_session
       title: Savings
-    - payload: ''
+    - payload: /start_investing_session
       title: Investing
-    - payload: ''
+    - payload: /start_budgeting_session
       title: Budgeting
     text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
 actions:
