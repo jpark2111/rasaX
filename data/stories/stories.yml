@@ -20,6 +20,14 @@ stories:
   - action: action_show_transfer_charge
   - intent: affirm
   - action: utter_ok
+- story: saving session 
+  steps:
+  - intent: start_savings_session
+  - action: utter_start_savings_session
+- story: draft_accountbalance
+  steps:
+  - intent: mx_accountbalance
+  - action: action_mx_accountbalance
 - story: hysa story
   steps:
   - intent: open_hysa
