@@ -73,6 +73,11 @@ entities:
 - handoff_to
 - search_type
 slots:
+  nickname:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
   first_name:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
@@ -373,7 +378,7 @@ responses:
   - text: Great, so  how long many months do you need to save this amount?
   utter_savings_goal:
   - text: Cool, so you will need to save {currency} a month to hit your goal.
-  utter_name_prompt:
+  utter_ask_nickname:
   - text: Before we get started, what shall I call you?
   utter_nickname:
   - buttons:

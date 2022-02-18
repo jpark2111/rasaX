@@ -48,8 +48,8 @@ stories:
   - action: action_mx_accountbalance
 - story: ask_nickname_rememberit
   steps:
+  - intent: greet
   - action: utter_greet
-  - action: utter_name_prompt
   - action: nickname_form
   - active_loop: nickname_form
   - slot_was_set:

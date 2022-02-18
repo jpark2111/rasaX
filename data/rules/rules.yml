@@ -12,12 +12,6 @@ rules:
   steps:
   - intent: out_of_scope
   - action: utter_out_of_scope
-- rule: greet
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - action: utter_ask_nickname_rememberit
-  - action: utter_prompt
 - rule: say goodbye
   steps:
   - intent: goodbye
@@ -115,7 +109,8 @@ rules:
   - action: utter_full_name
 - rule: Activate Nickname Form
   steps:
-  - action: utter_name_prompt
+  - intent: greet
+  - action: utter_greet
   - action: nickname_form
   - active_loop: nickname_form
 - rule: Submit Nickname Form
