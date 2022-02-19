@@ -122,3 +122,19 @@ rules:
   - slot_was_set:
     - requested_slot: null
   - action: utter_nickname
+- rule: Activate Savings Form
+  steps:
+  - intent: start_savings_session
+  - action: utter_start_savings_session
+  - action: utter_savings_session2
+  - action: savings_form
+  - active_loop: savings_form
+- rule: Submit Savings Form
+  condition: 
+  - active_loop: savings_form
+  steps:
+  - action: savings_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_savings_goal_amount

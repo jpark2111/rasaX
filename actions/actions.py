@@ -951,6 +951,20 @@ class ActionMxBalance(Action):
         dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name)
         return []
 
+class ActionSavingsGoalAmount(Action):
+    def name(self) -> Text:
+        return "action_savings_goal_amount"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+
+        savings_amount_of_money = tracker.get_slot("savings_amount_of_money")
+        savings_timeline = tracker.get_slot("savings_timeline")
+        savings_goal_amount = int(int(savings_amount_of_money)/int(savings_timeline))
+        dispatcher.utter_message(response="utter_savings_goal", savings_goal_amount=savings_goal_amount)
+        return []
+
 
 # class ActionInsertName(Action):
 #     def name(self) -> Text:

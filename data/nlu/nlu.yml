@@ -233,6 +233,11 @@ nlu:
     - hola
 - intent: inform
   examples: |
+    - 3
+    - 6
+    - 9 
+    - 12
+    - 6 months
     - $10
     - 5000
     - 500
