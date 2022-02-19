@@ -72,6 +72,7 @@ entities:
 - account_type
 - handoff_to
 - search_type
+- timeline
 slots:
   nickname:
     type: rasa.shared.core.slots.TextSlot
@@ -204,6 +205,16 @@ slots:
     auto_fill: true
     influence_conversation: false
   zz_confirm_form:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  savings_amount_of_money:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  savings_timeline:
     type: rasa.shared.core.slots.AnySlot
     initial_value: null
     auto_fill: true
@@ -359,16 +370,26 @@ responses:
   utter_start_savings_session:
   - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
     text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
+  utter_savings_session2:
+  - image: 'https://media.giphy.com/media/1YZQJBcZWgdaoUoVRd/giphy-downsized.gif'
+    text: So how much should be in your savings? Aim to have 3-6 months of your monthly salary saved (6-12 if you have children) but we recommend getting started with a goal of $1000.
   utter_open_hysa:
   - text: 'Please click this link: https://www.marcus.com/us/en'
   utter_mx_accountbalance:
   - text: 'Hey {first_name}, here is your account balance ${mx_balance}.'
-  utter_savings_amount:
+  utter_ask_savings_amount_of_money:
   - text: How much do you want to start saving?
-  utter_savings_savings_timeline:
-  - text: Great, so  how long many months do you need to save this amount?
+  utter_ask_savings_timeline:
+  - buttons:
+    - payload: '/inform{{"timeline": 3}}'
+      title: 3 Months
+    - payload: '/inform{{"timeline": 6}}'
+      title: 6 Months
+    - payload: '/inform{{"timeline": 12}}'
+      title: 12 Months
+    text: Great, so  how long many months do you need to save this amount?
   utter_savings_goal:
-  - text: Cool, so you will need to save {currency} a month to hit your goal.
+  - text: Cool, so you will need to save {currency}{savings_goal_amount} a month to hit your goal.
   utter_ask_nickname:
   - text: Before we get started, what shall I call you?
   utter_nickname:
@@ -399,10 +420,21 @@ actions:
 - action_switch_back_ask
 - action_insert_name
 - action_mx_accountbalance
+- action_savings_goal_amount
 - validate_cc_payment_form
 - validate_transfer_money_form
 - validate_transaction_search_form
 forms:
+  savings_form:
+    required_slots:
+      savings_amount_of_money:
+      - entity: amount-of-money
+        type: from_entity
+      - intent: inform
+        type: from_text
+      savings_timeline:
+      - entity: timeline
+        type: from_entity
   name_form:
     required_slots:
       first_name:
