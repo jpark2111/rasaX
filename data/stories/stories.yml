@@ -39,6 +39,7 @@ stories:
     - requested_slot: null
   - active_loop: null
   - action: action_savings_goal_amount
+  - action: utter_savings_takeaction
 - story: draft_accountbalance
   steps:
   - intent: mx_accountbalance

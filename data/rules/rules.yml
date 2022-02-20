@@ -138,3 +138,4 @@ rules:
   - slot_was_set:
     - requested_slot: null
   - action: action_savings_goal_amount
+  - action: utter_savings_takeaction
