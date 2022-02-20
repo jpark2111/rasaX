@@ -963,6 +963,8 @@ class ActionSavingsGoalAmount(Action):
         savings_timeline = tracker.get_slot("savings_timeline")
         savings_goal_amount = int(int(savings_amount_of_money)/int(savings_timeline))
         dispatcher.utter_message(response="utter_savings_goal", savings_goal_amount=savings_goal_amount)
+        dispatcher.utter_message(response="utter_savings_takeaction", savings_goal_amount=savings_goal_amount)
+        
         return []
 
 
