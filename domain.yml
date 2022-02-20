@@ -401,6 +401,13 @@ responses:
     - payload: /start_budgeting_session
       title: Budgeting
     text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
+  utter_savings_takeaction:
+  - buttons:
+    - payload: /open_hysa
+      title: Open a HYSA
+    - payload: /start_CD_session
+      title: Tell me more about a CD
+    text: Now you have a couple of choices, 1️⃣ If you already have a savings account, automate your transfer of {currency}{savings_goal_amount} from your main checking account; 2️⃣ If you don't have a savings, open up a HYSA or 3️⃣ open a CD if you have additional cash that is being saved for a specific goal (i.e. buying a house).
 actions:
 - action_session_start
 - action_restart
