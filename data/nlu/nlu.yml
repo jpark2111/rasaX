@@ -235,7 +235,7 @@ nlu:
   examples: |
     - 3
     - 6
-    - 9 
+    - 9
     - 12
     - 6 months
     - $10
