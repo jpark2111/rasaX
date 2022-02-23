@@ -616,6 +616,14 @@ nlu:
     - i want to save money
     - open a savings account
     - savings
+- intent: start_financial360_session
+  examples: |
+    - financial questions
+    - finance money map
+- intent: financial360_questions
+  examples: |
+    - let's start financial 360
+    - start fincnacial 360
 - intent: open_hysa
   examples: |
     - open savings account

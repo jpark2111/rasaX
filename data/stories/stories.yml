@@ -39,6 +39,47 @@ stories:
     - requested_slot: null
   - active_loop: null
   - action: action_savings_goal_amount
+- story: financial360 session affirm and start
+  steps:
+  - intent: start_financial360_session
+  - action: utter_start_financial360_session
+  - intent: financial360_questions
+  - action: financial360_form
+  - active_loop: financial360_form
+  - slot_was_set:
+    - requested_slot: isMarried
+  - slot_was_set:
+    - requested_slot: haveChildren
+  - slot_was_set:
+    - requested_slot: haveBudget
+  - slot_was_set:
+    - requested_slot: haveSavings
+  - slot_was_set:
+    - requested_slot: checkCredit
+  - slot_was_set:
+    - requested_slot: haveDebt
+  - slot_was_set:
+    - requested_slot: have401K
+  - slot_was_set:
+    - requested_slot: haveOld401K
+  - slot_was_set:
+    - requested_slot: haveIRA
+  - slot_was_set:
+    - requested_slot: haveBrokerage
+  - slot_was_set:
+    - requested_slot: haveRenters
+  - slot_was_set:
+    - requested_slot: haveLifeInsurance
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_nickname
+- story: financial360 session deny and greet
+  steps:
+  - intent: start_financial360_session
+  - action: utter_start_financial360_session
+  - intent: deny
+  - action: utter_greet
 - story: draft_accountbalance
   steps:
   - intent: mx_accountbalance
