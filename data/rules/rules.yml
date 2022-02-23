@@ -138,3 +138,17 @@ rules:
   - slot_was_set:
     - requested_slot: null
   - action: action_savings_goal_amount
+- rule: Activate Financial360 Form
+  steps:
+  - intent: financial360_questions
+  - action: financial360_form
+  - active_loop: financial360_form
+- rule: Submit Financial360 Form
+  condition: 
+  - active_loop: financial360_form
+  steps:
+  - action: financial360_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_nickname

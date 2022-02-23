@@ -11,6 +11,8 @@ intents:
     use_entities: true
 - start_savings_session:
     use_entities: true
+- start_financial360_session:
+    use_entities: []
 - transfer_money:
     use_entities: []
 - inform:
@@ -61,6 +63,8 @@ intents:
     use_entities: true
 - mx_accountbalance:
     use_entities: true
+- financial360_questions:
+    use_entities: []
 entities:
 - amount-of-money
 - credit_card
@@ -219,6 +223,66 @@ slots:
     initial_value: null
     auto_fill: true
     influence_conversation: false
+  isMarried:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveChildren:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveBudget:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveSavings:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  checkCredit:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveDebt:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  have401K:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveOld401K:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveIRA:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveBrokerage:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveRenters:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveLifeInsurance:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
 responses:
   utter_out_of_scope:
   - text: Sorry, I'm not sure how to respond to that. Type "help" for assistance.
@@ -370,6 +434,97 @@ responses:
   utter_start_savings_session:
   - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
     text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
+  utter_start_financial360_session:
+  - buttons:
+    - payload: /financial360_questions
+      title: Let's do this!
+    - payload: /deny
+      title: I'll do this later.
+    text: Building wealth starts with understanding where you're at and where you want to go. Think of a financial 360 as a way to build your personalized map to building wealth. We are going to ask some questions based on our 5 pillars of building wealth and give you personalized recommendations. 
+  utter_ask_isMarried:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Are you married?
+  utter_ask_haveChildren:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have children?
+  utter_ask_haveBudget:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have and use a budget? 
+  utter_ask_haveSavings:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have a savings with at least $1000?
+  utter_ask_checkCredit:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you regularly track your credit score and credit history?
+  utter_ask_haveDebt:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you feel overwhelmed by your debt? 
+  utter_ask_have401K:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Are you currently contributing to your 401K?
+  utter_ask_haveOld401K:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have a 401K from an old job that you haven't rolled-over?
+  utter_ask_haveIRA:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have an IRA?
+  utter_ask_haveBrokerage:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have a brokerage account?
+  utter_ask_haveRenters:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have home owners or renters insurance?
+  utter_ask_haveLifeInsurance:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have independent life insurance (not attached to your job?
   utter_savings_session2:
   - image: 'https://media.giphy.com/media/1YZQJBcZWgdaoUoVRd/giphy-downsized.gif'
     text: So how much should be in your savings? Aim to have 3-6 months of your monthly salary saved (6-12 if you have children) but we recommend getting started with a goal of $1000.
@@ -400,6 +555,8 @@ responses:
       title: Investing
     - payload: /start_budgeting_session
       title: Budgeting
+    - payload: /start_financial360_session
+      title: Financial 360
     text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
   utter_savings_takeaction:
   - buttons:
@@ -432,6 +589,92 @@ actions:
 - validate_transfer_money_form
 - validate_transaction_search_form
 forms:
+  financial360_form:
+    required_slots:
+      isMarried:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveChildren:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveBudget:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveSavings:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      checkCredit:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveDebt:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      have401K:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveOld401K:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveIRA:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveBrokerage:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveRenters:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveLifeInsurance:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
   savings_form:
     required_slots:
       savings_amount_of_money:
