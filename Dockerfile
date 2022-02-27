@@ -10,8 +10,6 @@ RUN python -m spacy download en_core_web_md
 RUN python -m spacy link en_core_web_md en
 
 COPY ./data /app/data
-COPY config.yml /app
-COPY endpoints.yml /app
 
 RUN rasa train
 
