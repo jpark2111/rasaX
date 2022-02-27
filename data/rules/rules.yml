@@ -12,12 +12,6 @@ rules:
   steps:
   - intent: out_of_scope
   - action: utter_out_of_scope
-- rule: greet
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - action: utter_ask_nickname_rememberit
-  - action: utter_prompt
 - rule: say goodbye
   steps:
   - intent: goodbye
@@ -115,7 +109,8 @@ rules:
   - action: utter_full_name
 - rule: Activate Nickname Form
   steps:
-  - action: utter_name_prompt
+  - intent: greet
+  - action: utter_greet
   - action: nickname_form
   - active_loop: nickname_form
 - rule: Submit Nickname Form
@@ -123,6 +118,36 @@ rules:
   - active_loop: nickname_form
   steps:
   - action: nickname_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_nickname
+- rule: Activate Savings Form
+  steps:
+  - intent: start_savings_session
+  - action: utter_start_savings_session
+  - action: utter_savings_session2
+  - action: savings_form
+  - active_loop: savings_form
+- rule: Submit Savings Form
+  condition: 
+  - active_loop: savings_form
+  steps:
+  - action: savings_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_savings_goal_amount
+- rule: Activate Financial360 Form
+  steps:
+  - intent: financial360_questions
+  - action: financial360_form
+  - active_loop: financial360_form
+- rule: Submit Financial360 Form
+  condition: 
+  - active_loop: financial360_form
+  steps:
+  - action: financial360_form
   - active_loop: null
   - slot_was_set:
     - requested_slot: null

@@ -11,6 +11,8 @@ intents:
     use_entities: true
 - start_savings_session:
     use_entities: true
+- start_financial360_session:
+    use_entities: []
 - transfer_money:
     use_entities: []
 - inform:
@@ -61,6 +63,8 @@ intents:
     use_entities: true
 - mx_accountbalance:
     use_entities: true
+- financial360_questions:
+    use_entities: []
 entities:
 - amount-of-money
 - credit_card
@@ -72,7 +76,13 @@ entities:
 - account_type
 - handoff_to
 - search_type
+- timeline
 slots:
+  nickname:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
   first_name:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
@@ -199,6 +209,76 @@ slots:
     auto_fill: true
     influence_conversation: false
   zz_confirm_form:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  savings_amount_of_money:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  savings_timeline:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  isMarried:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveChildren:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveBudget:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveSavings:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  checkCredit:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveDebt:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  have401K:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveOld401K:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveIRA:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveBrokerage:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveRenters:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  haveLifeInsurance:
     type: rasa.shared.core.slots.AnySlot
     initial_value: null
     auto_fill: true
@@ -351,39 +431,140 @@ responses:
   utter_full_name:
   - image: https://media.giphy.com/media/YoeipjdqpYPvcTGnMq/giphy-downsized.gif
     text: Great to meet you  {first_name}!
-  utter_prompt:
-  - buttons:
-    - payload: /start_budgeting_session
-      title: Budgeting
-    - payload: /start_savings_session
-      title: Saving
-    - payload: /start_investing_session
-      title: Investing
-    text: 'I can answer questions about:'
   utter_start_savings_session:
   - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
     text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
+  utter_start_financial360_session:
+  - buttons:
+    - payload: /financial360_questions
+      title: Let's do this!
+    - payload: /deny
+      title: I'll do this later.
+    text: Building wealth starts with understanding where you're at and where you want to go. Think of a financial 360 as a way to build your personalized map to building wealth. We are going to ask some questions based on our 5 pillars of building wealth and give you personalized recommendations. 
+  utter_ask_isMarried:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Are you married?
+  utter_ask_haveChildren:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have children?
+  utter_ask_haveBudget:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have and use a budget? 
+  utter_ask_haveSavings:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have a savings with at least $1000?
+  utter_ask_checkCredit:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you regularly track your credit score and credit history?
+  utter_ask_haveDebt:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you feel overwhelmed by your debt? 
+  utter_ask_have401K:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Are you currently contributing to your 401K?
+  utter_ask_haveOld401K:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have a 401K from an old job that you haven't rolled-over?
+  utter_ask_haveIRA:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have an IRA?
+  utter_ask_haveBrokerage:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have a brokerage account?
+  utter_ask_haveRenters:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have home owners or renters insurance?
+  utter_ask_haveLifeInsurance:
+  - buttons:
+    - payload: /affirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Do you have independent life insurance (not attached to your job?
+  utter_savings_session2:
+  - image: 'https://media.giphy.com/media/1YZQJBcZWgdaoUoVRd/giphy-downsized.gif'
+    text: So how much should be in your savings? Aim to have 3-6 months of your monthly salary saved (6-12 if you have children) but we recommend getting started with a goal of $1000.
   utter_open_hysa:
   - text: 'Please click this link: https://www.marcus.com/us/en'
   utter_mx_accountbalance:
   - text: 'Hey {first_name}, here is your account balance ${mx_balance}.'
-  utter_savings_amount:
+  utter_ask_savings_amount_of_money:
   - text: How much do you want to start saving?
-  utter_savings_savings_timeline:
-  - text: Great, so  how long many months do you need to save this amount?
+  utter_ask_savings_timeline:
+  - buttons:
+    - payload: '/inform{{"timeline": 3}}'
+      title: 3 Months
+    - payload: '/inform{{"timeline": 6}}'
+      title: 6 Months
+    - payload: '/inform{{"timeline": 12}}'
+      title: 12 Months
+    text: Great, so  how long many months do you need to save this amount?
   utter_savings_goal:
-  - text: Cool, so you will need to save {currency} a month to hit your goal.
-  utter_name_prompt:
+  - text: Cool, so you will need to save {currency}{savings_goal_amount} a month to hit your goal.
+  utter_ask_nickname:
   - text: Before we get started, what shall I call you?
   utter_nickname:
   - buttons:
-    - payload: ''
+    - payload: /start_savings_session
       title: Savings
-    - payload: ''
+    - payload: /start_investing_session
       title: Investing
-    - payload: ''
+    - payload: /start_budgeting_session
       title: Budgeting
+    - payload: /start_financial360_session
+      title: Financial 360
     text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
+  utter_savings_takeaction:
+  - buttons:
+    - payload: /open_hysa
+      title: Open a HYSA
+    - payload: /start_CD_session
+      title: Tell me more about a CD
+    text: Now you have a couple of choices, 1️⃣ If you already have a savings account, automate your transfer of {currency}{savings_goal_amount} from your main checking account; 2️⃣ If you don't have a savings, open up a HYSA or 3️⃣ open a CD if you have additional cash that is being saved for a specific goal (i.e. buying a house).
 actions:
 - action_session_start
 - action_restart
@@ -403,10 +584,107 @@ actions:
 - action_switch_back_ask
 - action_insert_name
 - action_mx_accountbalance
+- action_savings_goal_amount
 - validate_cc_payment_form
 - validate_transfer_money_form
 - validate_transaction_search_form
 forms:
+  financial360_form:
+    required_slots:
+      isMarried:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveChildren:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveBudget:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveSavings:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      checkCredit:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveDebt:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      have401K:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveOld401K:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveIRA:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveBrokerage:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveRenters:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      haveLifeInsurance:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+  savings_form:
+    required_slots:
+      savings_amount_of_money:
+      - entity: amount-of-money
+        type: from_entity
+      - intent: inform
+        type: from_text
+      savings_timeline:
+      - entity: timeline
+        type: from_entity
   name_form:
     required_slots:
       first_name:
