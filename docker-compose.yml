@@ -5,7 +5,9 @@ services:
     restart: always
     image: "jpark2111/wb_rasa:latest-SG"
     ports:
-      - 5006:5005
+      - 5005:5005
+    volumes:
+      - ./:/app
     depends_on:
       - duckling
       - app
