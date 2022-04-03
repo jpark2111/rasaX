@@ -6,6 +6,7 @@ USER root
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install scipy==1.8.0
 RUN python -m spacy download en_core_web_md 
 RUN python -m spacy link en_core_web_md en
 

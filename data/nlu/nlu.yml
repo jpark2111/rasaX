@@ -610,6 +610,12 @@ nlu:
   examples: |
     - What's your name?
     - do you know my name?
+- intent: startSession
+  examples: |
+    - [jay](userName)
+    - [1](userId)
+    - [jason](userName)
+    - [2](userId)
 - intent: start_savings_session
   examples: |
     - savings account
