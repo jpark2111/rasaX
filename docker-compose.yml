@@ -9,7 +9,6 @@ services:
     volumes:
       - ./:/app
     depends_on:
-      - duckling
       - app
   app:
     restart: always
@@ -18,9 +17,3 @@ services:
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     ports:
       - 5055:5055
-  duckling:
-    restart: always
-    image: "rasa/duckling:latest"
-    ports:
-      - 8000:8000
-    command: ["duckling-example-exe", "-p", "8000", "--no-access-log", "--no-error-log"]
