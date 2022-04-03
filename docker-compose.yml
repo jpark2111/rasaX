@@ -4,7 +4,6 @@ services:
   rasa:
     restart: always
     image: "jpark2111/wb_rasa:latest-SG"
-    user: root
     ports:
       - 5005:5005
     volumes:
