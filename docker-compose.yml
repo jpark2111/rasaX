@@ -1,7 +1,7 @@
 version: "3.4"
 
 services:
-  rasa:
+  rasa-server:
     restart: always
     image: "jpark2111/wb_rasa:latest-SG"
     ports:
