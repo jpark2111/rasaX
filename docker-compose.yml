@@ -1,16 +1,17 @@
 version: "3.4"
 
 services:
-  rasa-server:
+  rasa:
     restart: always
     image: "jpark2111/wb_rasa:latest-SG"
     ports:
-      - 5005:5005
+      - 5005:8080
     volumes:
       - ./:/app
     depends_on:
       - duckling
       - app
+    public: true
   app:
     restart: always
     image: "jpark2111/wealthbuild_rasa_action_server:latest-SG"
