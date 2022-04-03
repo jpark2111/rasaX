@@ -109,8 +109,11 @@ rules:
   - action: utter_full_name
 - rule: Activate Nickname Form
   steps:
-  - intent: greet
-  - action: utter_greet
+  - intent: startSession
+    entities:
+    - userName: jay
+    - userId: 1
+  - action: action_greet
   - action: nickname_form
   - active_loop: nickname_form
 - rule: Submit Nickname Form
@@ -127,7 +130,7 @@ rules:
   - intent: start_savings_session
   - action: utter_start_savings_session
   - action: utter_savings_session2
-  - action: savings_form
+  - action: action_savings_form
   - active_loop: savings_form
 - rule: Submit Savings Form
   condition: 
@@ -151,4 +154,8 @@ rules:
   - active_loop: null
   - slot_was_set:
     - requested_slot: null
-  - action: utter_nickname
+  - action: action_financial360
+- rule: greet
+  steps: 
+  - intent: greet
+  - action: action_greet

@@ -2,8 +2,8 @@ version: '2.0'
 config:
   store_entities_as_slots: true
 session_config:
-  session_expiration_time: 0
-  carry_over_slots_to_new_session: true
+  session_expiration_time: 5
+  carry_over_slots_to_new_session: false
 intents:
 - check_human:
     use_entities: true
@@ -65,6 +65,8 @@ intents:
     use_entities: true
 - financial360_questions:
     use_entities: []
+- startSession:
+    use_entities: true
 entities:
 - amount-of-money
 - credit_card
@@ -77,7 +79,19 @@ entities:
 - handoff_to
 - search_type
 - timeline
+- userName
+- userId
 slots:
+  userName:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  userId:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
   nickname:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
@@ -404,6 +418,10 @@ responses:
   - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
     text: Hi! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
   - text: Hola, I am Yoli, your smart financial assistant.
+  utter_greet_user:
+  - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
+    text: Hi {userId} {userName}! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
+  - text: Hola {userId} {userName}, I am Yoli, your smart financial assistant.
   utter_ask_handoff:
   - text: It looks like you want to be transferred to a human agent.
   utter_handoff:
@@ -531,7 +549,7 @@ responses:
   utter_open_hysa:
   - text: 'Please click this link: https://www.marcus.com/us/en'
   utter_mx_accountbalance:
-  - text: 'Hey {first_name}, here is your account balance ${mx_balance}.'
+  - text: 'Hey {first_name}, {userName} here is your account balance ${mx_balance}.'
   utter_ask_savings_amount_of_money:
   - text: How much do you want to start saving?
   utter_ask_savings_timeline:
@@ -565,6 +583,8 @@ responses:
     - payload: /start_CD_session
       title: Tell me more about a CD
     text: Now you have a couple of choices, 1️⃣ If you already have a savings account, automate your transfer of {currency}{savings_goal_amount} from your main checking account; 2️⃣ If you don't have a savings, open up a HYSA or 3️⃣ open a CD if you have additional cash that is being saved for a specific goal (i.e. buying a house).
+  utter_financial360:
+  - text: check this out https://www.mymoneymyfuture.co/
 actions:
 - action_session_start
 - action_restart
@@ -585,6 +605,9 @@ actions:
 - action_insert_name
 - action_mx_accountbalance
 - action_savings_goal_amount
+- action_savings_form
+- action_greet
+- action_financial360
 - validate_cc_payment_form
 - validate_transfer_money_form
 - validate_transaction_search_form

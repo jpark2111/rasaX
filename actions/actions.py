@@ -1,11 +1,13 @@
 """Custom actions"""
 import os
+
 from typing import Dict, Text, Any, List
 import logging
 from dateutil import parser
 import sqlalchemy as sa
 import actions.service as service
 # import pyodbc
+from dotenv import load_dotenv
 
 from rasa_sdk.interfaces import Action
 from rasa_sdk.events import (
@@ -30,6 +32,11 @@ from actions.parsing import (
 from actions.profile_db import create_database, ProfileDB
 
 from actions.custom_forms import CustomFormValidationAction
+
+import sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content
+
+load_dotenv()
 
 
 logger = logging.getLogger(__name__)
@@ -945,10 +952,10 @@ class ActionMxBalance(Action):
     ) -> List[EventType]:
 
         first_name = tracker.get_slot("first_name")
-
+        userName = get_entity_details(tracker, "userName")
         balance = service.get_mx_balance()
        
-        dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name)
+        dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name, userName=userName)
         return []
 
 class ActionSavingsGoalAmount(Action):
@@ -967,6 +974,73 @@ class ActionSavingsGoalAmount(Action):
         
         return []
 
+
+class ActionGreet(Action):
+    def name(self) -> Text:
+        return "action_greet"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+
+        userName = tracker.get_slot("userName")
+        userId = tracker.get_slot("userId")
+        
+        if (userName):
+            dispatcher.utter_message(response="utter_greet_user", userName=userName, userId=userId)
+        else:
+            dispatcher.utter_message(response="utter_greet")
+        return []
+
+class ActionSavingsForm(Action):
+    """Executes after restart of a session"""
+
+    def name(self) -> Text:
+        """Unique identifier of the action"""
+        return "action_savings_form"
+
+    async def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[EventType]:
+        """Executes the custom action"""
+        return [
+            SlotSet("savings_amount_of_money", None),
+            SlotSet("savings_timeline", None), 
+            FollowupAction("savings_form")]
+
+
+class ActionSavingsGoalAmount(Action):
+    def name(self) -> Text:
+        return "action_financial360"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        
+        from_email = Email("jhp1818@gmail.com")  # Change to your verified sender
+        to_email = To("jpark2111@gmail.com")  # Change to your recipient
+        subject = "Here is your financial recommendation by Yoli"
+        content = Content("text/plain", "Go to wealthbuiuld.io for more information")
+        mail = Mail(from_email, to_email, subject, content)
+
+        # Get a JSON-ready representation of the Mail object
+        mail_json = mail.get()
+        try:
+        # Send an HTTP POST request to /mail/send
+            sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+            response = sg.client.mail.send.post(request_body=mail_json)
+            print(response.status_code)
+            print(response.headers)
+            print(response.body)
+
+        except Exception as e:
+            print(e)
+
+        dispatcher.utter_message(response="utter_financial360")
+        return []
 
 # class ActionInsertName(Action):
 #     def name(self) -> Text:
