@@ -866,3 +866,136 @@ stories:
   - slot_was_set:
     - requested_slot: amount-of-money
   - action: transfer_money_form
+- story: saving session 
+  steps:
+  - intent: start_savings_session
+  - action: utter_start_savings_session
+  - action: utter_savings_session2
+  - action: action_savings_form
+  - active_loop: savings_form
+  - slot_was_set:
+    - requested_slot: savings_amount_of_money
+  - slot_was_set:
+    - savings_amount_of_money: 1000
+  - slot_was_set:
+    - requested_slot: savings_timeline
+  - slot_was_set:
+    - savings_timeline: 6
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_savings_goal_amount
+- story: financial360 session affirm and start
+  steps:
+  - intent: start_financial360_session
+  - action: utter_start_financial360_session
+  - intent: financial360_questions
+  - action: financial360_form
+  - active_loop: financial360_form
+  - slot_was_set:
+    - requested_slot: isMarried
+  - slot_was_set:
+    - requested_slot: haveChildren
+  - slot_was_set:
+    - requested_slot: haveBudget
+  - slot_was_set:
+    - requested_slot: haveSavings
+  - slot_was_set:
+    - requested_slot: checkCredit
+  - slot_was_set:
+    - requested_slot: haveDebt
+  - slot_was_set:
+    - requested_slot: have401K
+  - slot_was_set:
+    - requested_slot: haveOld401K
+  - slot_was_set:
+    - requested_slot: haveIRA
+  - slot_was_set:
+    - requested_slot: haveBrokerage
+  - slot_was_set:
+    - requested_slot: haveRenters
+  - slot_was_set:
+    - requested_slot: haveLifeInsurance
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_financial360
+- story: financial360 session deny and greet
+  steps:
+  - intent: start_financial360_session
+  - action: utter_start_financial360_session
+  - intent: deny
+  - action: utter_greet
+- story: draft_accountbalance
+  steps:
+  - intent: mx_accountbalance
+  - action: action_mx_accountbalance
+- story: hysa story
+  steps:
+  - intent: open_hysa
+  - action: utter_open_hysa
+- story: draft_accountbalance
+  steps:
+  - intent: mx_accountbalance
+  - action: action_mx_accountbalance
+- story: start session
+  steps:
+  - intent: startSession
+    entities:
+    - userName: jay
+    - userId: 1
+    - email: j@gmail.com
+  - action: action_greet
+- story: ask which session start
+  steps:
+  - action: action_start_session_aftergreet
+  - action: utter_startSession
+- story: ask_nickname_rememberit
+  steps:
+  - action: action_start_nickname_form
+  - action: nickname_form
+  - active_loop: nickname_form
+  - slot_was_set:
+    - requested_slot: nickname
+  - slot_was_set:
+    - nickname: vincent
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_nickname
+- story: how much life insurance + all purpose + activate life insurance how much form session
+  steps:
+  - intent: lifeInsuranceStartSession
+    entities:
+    - userName: jason
+    - userId: 1
+    - email: j@gmail.com
+  - action: action_lifeInsurance_session
+  - action: utter_lifeInsurance_session2
+  - intent: lifeInsurance_howMuch
+  - action: utter_lifeInsurance_howMuch
+  - action: utter_lifeInsurance_howMuch1
+  - intent: lifeInsurance_purpose_all
+  - action: utter_lifeInsurance_purpose_all
+  - action: lifeInsurance_howMuch_form
+  - active_loop: lifeInsurance_howMuch_form
+  - slot_was_set:
+    - requested_slot: mortgage_amount
+  - slot_was_set:
+    - mortgage_amount: 300000
+  - slot_was_set:
+    - requested_slot: annual_salary
+  - slot_was_set:
+    - annual_salary: 75000
+  - slot_was_set:
+    - requested_slot: cumulative_debts
+  - slot_was_set:
+    - cumulative_debts: 20000
+  - slot_was_set:
+    - requested_slot: how_many_children
+  - slot_was_set:
+    - how_many_children: 5
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_lifeInsurance_estimate

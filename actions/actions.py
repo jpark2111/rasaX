@@ -4,8 +4,13 @@ import os
 from typing import Dict, Text, Any, List
 import logging
 from dateutil import parser
+from datetime import date
+import datetime
 import sqlalchemy as sa
 import actions.service as service
+import actions.financial360 as financial360
+import requests
+
 # import pyodbc
 from dotenv import load_dotenv
 
@@ -34,7 +39,19 @@ from actions.profile_db import create_database, ProfileDB
 from actions.custom_forms import CustomFormValidationAction
 
 import sendgrid
-from sendgrid.helpers.mail import Mail, Email, To, Content
+from sendgrid.helpers.mail import Mail
+
+from langchain.embeddings import SentenceTransformerEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.text_splitter import (
+    RecursiveCharacterTextSplitter,
+)
+from langchain.chains import RetrievalQA
+from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+from langchain import LLMChain
+from langchain.prompts import PromptTemplate
+from datasets import load_dataset
 
 load_dotenv()
 
@@ -43,6 +60,9 @@ logger = logging.getLogger(__name__)
 
 # The profile database is created/connected to when the action server starts
 # It is populated the first time `ActionSessionStart.run()` is called .
+
+hf_token = os.environ.get("HUGGINGFACEHUB_ADMIN_API_TOKEN")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 PROFILE_DB_NAME = os.environ.get("PROFILE_DB_NAME", "profile")
 PROFILE_DB_URL = os.environ.get("PROFILE_DB_URL", f"sqlite:///{PROFILE_DB_NAME}.db")
@@ -72,6 +92,107 @@ FORM_DESCRIPTION = {
     "transfer_money_form": "money transfer",
     "transaction_search_form": "transaction search",
 }
+
+dataset = load_dataset("WealthBuild/Investing_Knowledgebase", use_auth_token=hf_token)[
+    "train"
+]["text"]
+
+string_dataset = " ".join(dataset).strip("\n")
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1024, chunk_overlap=40, separators=["\n\n", "\n", "(?<=\. )" " ", ""]
+)
+chunks = text_splitter.split_text(string_dataset)
+
+model = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+db = FAISS.from_texts(
+    chunks,
+    model,
+    metadatas=[{"sources": f"mt-{i}"} for i in range(len(chunks))],
+)
+
+retreiver = db.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
+llm = OpenAI(
+    openai_api_key=OPENAI_API_KEY,
+    model_name="text-davinci-003",
+    temperature=0.1,
+    max_tokens=512,
+    streaming=True,
+    request_timeout=30,
+    verbose=True,
+)
+
+llm_chat = ChatOpenAI(
+    openai_api_key=OPENAI_API_KEY,
+    temperature=0.1,
+    model="gpt-3.5-turbo-0613",
+    streaming=True,
+    verbose=True,
+    max_tokens=512,
+)
+
+prompt_template = """ You’re an expert financial coach.  You have been helping people with financial planning for 20 years. Your task is now to give the best advice if someone ask question. If you don't know the answer that's fine.  The question given below will be related to financial term. Please generate answers in less than 60 words if possible. You must ALWAYS ask questions after you give the advice. Limit questions to 2 maximum to better understand how to best answer the user questions. Is that understood?
+No Hallucinations, please quote source when possible.
+
+Question: {question}
+
+Answer: """
+
+prompt_template_affirm = """You’re an expert financial coach.  You have been helping people with financial planning for 20 years. Your task is now to give the best advice using the following pieces of context at the end. If you don't know the answer that's fine. The Texts will be a sentence or paragraph about some financial term and ask user if they want to know more about something within the context. Please generate answers based on this context and Texts with more details in less than 150 words if possible. You must ALWAYS ask questions after you give the advice. Limit questions to 2 maximum to better understand how to best answer the user questions. Is that understood? No Hallucinations, please quote source when possible.
+{context}
+Texts: {question} 
+
+Helpful Answer with questions at the end: """
+
+prompt_template_intent = """You’re an expert financial coach.  You have been helping people with financial planning for 20 years. Your task is now to give the best advice using the following pieces of context at the end. If you don't know the answer that's fine. There will be Bot Message and User Message. The Bot Message will be a sentence or paragraph about some financial term and User Message will be a question or just simple word or sentence or paragraph. Please, you must figure out the Bot Message and User Message are in same context or not. If User Message is a word/sentence/paragraph related to the Bot Message then  Please generate answers based on this context and Bot Message and User Message with more details in less than 300 tokens.  If User Message is something off topic to the Bot Message then you must generate answers based on User Message only with more details in less than 300 tokens. ask user if they want to know more about something within the context. You must ALWAYS ask questions after you give the advice. Limit questions to 2 maximum to better understand how to best answer the user questions. Is that understood? No Hallucinations, please quote source when possible.
+{context}
+
+{question} 
+
+Helpful Answer with questions at the end: """
+
+
+def retrieval_qa_chain_with_affirm(message):
+    prompt = PromptTemplate(
+        template=prompt_template_affirm,
+        input_variables=["context", "question"],
+    )
+    chain_type_kwargs = {"prompt": prompt}
+
+    qa = RetrievalQA.from_chain_type(
+        llm=llm_chat,
+        chain_type="stuff",
+        retriever=retreiver,
+        chain_type_kwargs=chain_type_kwargs,
+    )
+
+    result = qa.run(message)
+    return result
+
+
+def retrieval_qa_chain_with_intent(message):
+    prompt = PromptTemplate(
+        template=prompt_template_intent,
+        input_variables=["context", "question"],
+    )
+    chain_type_kwargs = {"prompt": prompt}
+
+    qa = RetrievalQA.from_chain_type(
+        llm=llm_chat,
+        chain_type="stuff",
+        retriever=retreiver,
+        chain_type_kwargs=chain_type_kwargs,
+    )
+
+    result = qa.run(message)
+    return result
+
+
+def llm_chain(message):
+    llm_chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+    result = llm_chain.run(question=message)
+    return result
 
 
 class ActionPayCC(Action):
@@ -361,6 +482,56 @@ class ActionTransactionSearch(Action):
             dispatcher.utter_message(response="utter_transaction_search_cancelled")
 
         return [SlotSet(slot, value) for slot, value in slots.items()]
+
+
+class ActionMxTransactionSearch(Action):
+    """Searches for a mx transaction"""
+
+    def name(self) -> Text:
+        """Unique identifier of the action"""
+        return "action_mx_transactions_search"
+
+    async def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict]:
+        """Executes the action"""
+        slots = {
+            "AA_CONTINUE_FORM": None,
+            "zz_confirm_form": None,
+            "time": None,
+            "time_formatted": None,
+            "start_time": None,
+            "end_time": None,
+            "start_time_formatted": None,
+            "end_time_formatted": None,
+            "grain": None,
+            "search_type": None,
+            "vendor_name": None,
+        }
+        transaction = ""
+        startDate = ""
+        time = tracker.get_slot("time")
+        mxUser = tracker.get_slot("mxUser")
+        today = date.today()
+
+        if time == "week":
+            startDate = today - datetime.timedelta(days=7)
+        if time == "month":
+            startDate = today - datetime.timedelta(days=30)
+        transaction = service.get_mx_transaction(mxUser, startDate, today)
+
+        text = (
+            f"Here are your 3 most recent transactions."
+            f"category: {transaction[0].category} | description: {transaction[0].description} | amount: ${transaction[0].amount} at {transaction[0].createdAt}"
+            f"category: {transaction[1].category} | description: {transaction[1].description} | amount: ${transaction[1].amount} at {transaction[1].createdAt}"
+            f"category: {transaction[2].category} | description: {transaction[2].description} | amount: ${transaction[2].amount} at {transaction[2].createdAt}"
+        )
+        dispatcher.utter_message(text=text)
+        # dispatcher.utter_message(response="utter_mx_transactions", time=time, mx_transaction=transaction)
+        return [SlotSet("time", None)]
 
 
 class ValidateTransactionSearchForm(CustomFormValidationAction):
@@ -937,11 +1108,27 @@ class AskForLastNameAction(Action):
     def run(
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
-
         first_name = tracker.get_slot("first_name")
         dispatcher.utter_message(text=f"So {first_name}, what is your last name?")
 
         return []
+
+
+class ActionCheckMxAccount(Action):
+    def name(self) -> Text:
+        return "action_check_mxaccount"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        mxUser = tracker.get_slot("mxUser")
+        result = []
+        if mxUser:
+            result = [FollowupAction("action_mx_accountbalance")]
+        else:
+            dispatcher.utter_message(response="utter_mx_noAccount")
+        return result
+
 
 class ActionMxBalance(Action):
     def name(self) -> Text:
@@ -950,13 +1137,16 @@ class ActionMxBalance(Action):
     def run(
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
+        userName = tracker.get_slot("userName")
+        mxUser = tracker.get_slot("mxUser")
+        balance = service.get_mx_balance(mxUser)
 
-        first_name = tracker.get_slot("first_name")
-        userName = get_entity_details(tracker, "userName")
-        balance = service.get_mx_balance()
-       
-        dispatcher.utter_message(response="utter_mx_accountbalance", mx_balance=balance, first_name=first_name, userName=userName)
-        return []
+        dispatcher.utter_message(
+            response="utter_mx_accountbalance", mx_balance=balance, userName=userName
+        )
+
+        return [FollowupAction("utter_afterSession")]
+
 
 class ActionSavingsGoalAmount(Action):
     def name(self) -> Text:
@@ -965,13 +1155,16 @@ class ActionSavingsGoalAmount(Action):
     def run(
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
-
         savings_amount_of_money = tracker.get_slot("savings_amount_of_money")
         savings_timeline = tracker.get_slot("savings_timeline")
-        savings_goal_amount = int(int(savings_amount_of_money)/int(savings_timeline))
-        dispatcher.utter_message(response="utter_savings_goal", savings_goal_amount=savings_goal_amount)
-        dispatcher.utter_message(response="utter_savings_takeaction", savings_goal_amount=savings_goal_amount)
-        
+        savings_goal_amount = int(int(savings_amount_of_money) / int(savings_timeline))
+        dispatcher.utter_message(
+            response="utter_savings_goal", savings_goal_amount=savings_goal_amount
+        )
+        dispatcher.utter_message(
+            response="utter_savings_takeaction", savings_goal_amount=savings_goal_amount
+        )
+
         return []
 
 
@@ -982,15 +1175,40 @@ class ActionGreet(Action):
     def run(
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
+        userName = tracker.get_slot("userName")
 
+        if userName:
+            result = [FollowupAction("action_start_session_afterGreet")]
+        else:
+            result = [FollowupAction("action_start_nickname_form")]
+        return result
+
+
+class ActionAskNickname(Action):
+    def name(self) -> Text:
+        return "action_start_nickname_form"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        dispatcher.utter_message(response="utter_greet")
+        return []
+
+
+class ActionStartSessionAfterGreet(Action):
+    def name(self) -> Text:
+        return "action_start_session_afterGreet"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
         userName = tracker.get_slot("userName")
         userId = tracker.get_slot("userId")
-        
-        if (userName):
-            dispatcher.utter_message(response="utter_greet_user", userName=userName, userId=userId)
-        else:
-            dispatcher.utter_message(response="utter_greet")
+        dispatcher.utter_message(
+            response="utter_greet_user", userName=userName, userId=userId
+        )
         return []
+
 
 class ActionSavingsForm(Action):
     """Executes after restart of a session"""
@@ -1008,30 +1226,73 @@ class ActionSavingsForm(Action):
         """Executes the custom action"""
         return [
             SlotSet("savings_amount_of_money", None),
-            SlotSet("savings_timeline", None), 
-            FollowupAction("savings_form")]
+            SlotSet("savings_timeline", None),
+            FollowupAction("savings_form"),
+        ]
 
 
-class ActionSavingsGoalAmount(Action):
+class ActionFinancial360(Action):
     def name(self) -> Text:
         return "action_financial360"
 
     def run(
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
-        
-        from_email = Email("jhp1818@gmail.com")  # Change to your verified sender
-        to_email = To("jpark2111@gmail.com")  # Change to your recipient
+        isMarried = tracker.get_slot("isMarried")
+        haveChildren = tracker.get_slot("haveChildren")
+        haveBudget = tracker.get_slot("haveBudget")
+        haveSavings = tracker.get_slot("haveSavings")
+        checkCredit = tracker.get_slot("checkCredit")
+        if isMarried == "yes":
+            isMarriedAnswer = financial360.isMarried.yes
+        elif isMarried == "no":
+            isMarriedAnswer = financial360.isMarried.no
+        if haveChildren == "yes":
+            haveChildrenAnswer = financial360.haveChildren.yes
+        elif haveChildren == "no":
+            haveChildrenAnswer = financial360.haveChildren.no
+        if haveBudget == "yes":
+            haveBudgetAnswer = financial360.haveBudget.yes
+        elif haveBudget == "no":
+            haveBudgetAnswer = financial360.haveBudget.no
+        if haveSavings == "yes":
+            haveSavingsAnswer = financial360.haveSavings.yes
+        elif haveSavings == "no":
+            haveSavingsAnswer = financial360.haveSavings.no
+        if checkCredit == "yes":
+            checkCreditAnswer = financial360.checkCredit.yes
+        elif checkCredit == "no":
+            checkCreditAnswer = financial360.checkCredit.no
+
+        email = tracker.get_slot("email")
+        # from_email = Email("jhp1818@gmail.com")  # Change to your verified sender
+        # to_email = To(email)  # Change to your recipient
         subject = "Here is your financial recommendation by Yoli"
-        content = Content("text/plain", "Go to wealthbuiuld.io for more information")
-        mail = Mail(from_email, to_email, subject, content)
+        # content = Content("text/plain", "go to wealthbuild.ai for more information")
+        # mail = Mail(from_email, to_email, subject, content)
+        message = Mail(from_email=os.environ.get("ADMIN_EMAIL"), to_emails=email)
+        message.dynamic_template_data = {
+            "subject": subject,
+            "isMarriedQuestion": financial360.isMarried.question,
+            "isMarriedAnswer": isMarriedAnswer,
+            "haveChildrenQuestion": financial360.haveChildren.question,
+            "haveChildrenAnswer": haveChildrenAnswer,
+            "haveBudgetQuestion": financial360.haveBudget.question,
+            "haveBudgetAnswer": haveBudgetAnswer,
+            "haveSavingsQuestion": financial360.haveSavings.question,
+            "haveSavingsAnswer": haveSavingsAnswer,
+            "checkCreditQuestion": financial360.checkCredit.question,
+            "checkCreditAnswer": checkCreditAnswer,
+        }
+        message.template_id = os.environ.get("TEMPLATE_ID")
 
         # Get a JSON-ready representation of the Mail object
-        mail_json = mail.get()
+        # mail_json = mail.get()
         try:
-        # Send an HTTP POST request to /mail/send
-            sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
-            response = sg.client.mail.send.post(request_body=mail_json)
+            # Send an HTTP POST request to /mail/send
+            sg = sendgrid.SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
+            # response = sg.client.mail.send.post(request_body=mail_json)
+            response = sg.send(message)
             print(response.status_code)
             print(response.headers)
             print(response.body)
@@ -1041,6 +1302,203 @@ class ActionSavingsGoalAmount(Action):
 
         dispatcher.utter_message(response="utter_financial360")
         return []
+
+
+class ActionLifeInsurance(Action):
+    def name(self) -> Text:
+        return "action_lifeInsurance_session"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        userName = tracker.get_slot("userName")
+
+        if userName:
+            dispatcher.utter_message(
+                response="utter_lifeInsurance_session", userName=userName
+            )
+        else:
+            dispatcher.utter_message(
+                response="utter_lifeInsurance_session", userName=""
+            )
+        return []
+
+
+class ActionLifeInsuranceEstimate(Action):
+    def name(self) -> Text:
+        return "action_lifeInsurance_estimate"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        mortgage_amount = tracker.get_slot("mortgage_amount")
+        annual_salary = tracker.get_slot("annual_salary")
+        cumulative_debts = tracker.get_slot("cumulative_debts")
+        how_many_children = tracker.get_slot("how_many_children")
+        estimate = (
+            int(mortgage_amount)
+            + (int(annual_salary) * 10)
+            + int(cumulative_debts)
+            + (75000 * int(how_many_children))
+        )
+        dispatcher.utter_message(
+            response="utter_lifeInsurance_estimate", estimate=estimate
+        )
+
+        return []
+
+
+class ActionLifeInsurance(Action):
+    def name(self) -> Text:
+        return "action_retirement_unhappy_session"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        intent_name = tracker.latest_message["intent"]["name"]
+        result = []
+        if intent_name == "deny":
+            dispatcher.utter_message(response="utter_retirement_unhappy_deny1")
+            dispatcher.utter_message(response="utter_retirement_unhappy_deny2")
+        else:
+            dispatcher.utter_message(
+                response="utter_retirement_unhappy_general_guidance"
+            )
+            result.append(FollowupAction("financial360_form"))
+        return result
+
+
+class ActionHaystack(Action):
+    def name(self) -> Text:
+        return "action_call_haystack"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        url = "http://localhost:8000/query"
+        payload = {"query": str(tracker.latest_message["text"])}
+        headers = {"Content-Type": "application/json"}
+        response = requests.request("POST", url, headers=headers, json=payload).json()
+
+        if response["answers"]:
+            answer = response["answers"][0]["answer"]
+        else:
+            answer = "No Answer Found!"
+
+        dispatcher.utter_message(text=answer)
+
+        return []
+
+
+class ActionLangChain(Action):
+    def name(self) -> Text:
+        return "action_langchain"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        # file_from_local = os.path.expanduser("~/Downloads/529_Plans.txt")
+        # dataset = pd.read_table(
+        #     file_from_local, header=None, delimiter=None, skip_blank_lines=True
+        # )[0].to_list()
+        # dataset = load_dataset(
+        #     "WealthBuild/Investing_Knowledgebase",
+        #     use_auth_token=hf_token,
+        # )["train"]["text"]
+        # string_dataset = " ".join(dataset)
+
+        # llm = HuggingFaceHub(
+        #     repo_id="mosaicml/mpt-7b",
+        #     model_kwargs={"temperature": 0.1},
+        # )
+
+        # chain = load_qa_chain(llm=llm, chain_type="map_reduce")
+        query = tracker.latest_message["text"]
+        # handler = StdOutCallbackHandler()
+
+        # result = chain.run(
+        #     input_documents=similar_docs, question=query, callbacks=[handler]
+        # )
+        qa = RetrievalQA.from_chain_type(
+            llm=llm, chain_type="stuff", retriever=retreiver
+        )
+
+        # )
+        # chain = load_qa_with_sources_chain(llm=llm, chain_type="stuff")
+        # qa = RetrievalQAWithSourcesChain.from_chain_type(
+        #     llm=llm,
+        #     chain_type="stuff",
+        #     retriever=db.as_retriever(search_kwargs={"k": 5}),
+        #     return_source_documents=True,
+        # )
+        # result = qa.run(query)
+        result = qa.run(query)
+        # answer = result["result"]
+        # source_docs = result["source_documents"]
+        # result = qa({"query": query})
+        # answer = result["result"]
+        # sources = result["sources"]
+        # documents = result["source_documents"]
+
+        # vector_dimension = data_embeddings.shape[1]
+        # index = faiss.IndexFlatL2(vector_dimension)
+        # faiss.normalize_L2(data_embeddings)
+        # index.add(data_embeddings)
+
+        # search_text = tracker.latest_message["text"]
+        # search_embeddings = model.encode(search_text)
+        # search_vector = np.array([search_embeddings])
+        # faiss.normalize_L2(search_vector)
+
+        # k = 5
+        # d, i = index.search(search_vector, k=k)
+        # print(i)
+        dispatcher.utter_message(text=result)
+        return []
+
+
+class ActionGeneralLangChain(Action):
+    def name(self) -> Text:
+        return "action_general_langchain"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+    ) -> List[EventType]:
+        user_message = tracker.latest_message["text"]
+        latest_bot_message = tracker.get_last_event_for(event_type="bot")["text"]
+        previous_action_name = tracker.get_last_event_for(
+            event_type="action", exclude=["action_listen"]
+        )["name"]
+        latest_intent = tracker.get_intent_of_latest_message(skip_fallback_intent=False)
+        print(
+            f"latest intent = {latest_intent}, previous action name = {previous_action_name}"
+        )
+
+        if (
+            previous_action_name == "action_general_langchain"
+            and latest_intent == "affirm"
+        ):
+            result = retrieval_qa_chain_with_affirm(latest_bot_message)
+
+        elif previous_action_name == "action_general_langchain" and (
+            latest_intent == "knowledge_question" or latest_intent == "nlu_fallback"
+        ):
+            message = (
+                f"Bot Message: {latest_bot_message} \n User Message: {user_message}"
+            )
+            result = retrieval_qa_chain_with_intent(message)
+
+        elif (
+            latest_intent == "knowledge_question" or latest_intent == "nlu_fallback"
+        ) and previous_action_name != "action_general_langchain":
+            result = llm_chain(user_message)
+
+        dispatcher.utter_message(text=result)
+        return []
+
 
 # class ActionInsertName(Action):
 #     def name(self) -> Text:

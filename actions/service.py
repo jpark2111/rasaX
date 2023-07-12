@@ -1,18 +1,30 @@
 import requests
+import numpy as np
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_HOST = os.environ.get('API_HOST')
+endpoint = f"{API_HOST}/api/v1/mx";
+def balance_endpoint(guid): 
+        return f"{endpoint}/user/{guid}/accounts?page=1&records_per_page=10"
+
+def transaction_endpoint(guid, startDate, endDate):
+        return f"{endpoint}/user/{guid}/transactions?fromDate={startDate}&toDate={endDate}"
 
 
-address = "https://int-api.mx.com/users/USR-8fe5e260-fe63-47dd-b8cd-438cd5a48b94/accounts?page=1&records_per_page=10"
-headers = {
-            "Accept": "application/vnd.mx.api.v1+json",
-            "Content-Type": "application/json",
-    }
-userName = "653f7dba-265c-4d70-ba21-3b94dc126361"
-password = "0effbf747bfe42043998c4510489cf39d39c30ed"
-
-def get_mx_balance():
+def get_mx_balance(guid):
     
     response = requests.get(
-            address, verify=False, headers=headers, auth=(userName, password)
-    ).json()["accounts"][0]["balance"]
+            balance_endpoint(guid), verify=True
+    ).json()["accounts"]
+    
+    filteredByChecking = filter(lambda item: item['type'] == "CHECKING", response)
+    result = map(lambda item: item['balance'], list(filteredByChecking))
+    return list(result)[0]
 
-    return response
+def get_mx_transaction(guid, startDate, endDate):
+        response = requests.get(transaction_endpoint(guid, startDate, endDate), verify=True).json()["transactions"]
+        firstThreeTransactions = np.array(response)[0:3]
+        return firstThreeTransactions

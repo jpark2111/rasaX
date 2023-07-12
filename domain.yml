@@ -1,86 +1,141 @@
-version: '2.0'
+version: "2.0"
 config:
   store_entities_as_slots: true
 session_config:
   session_expiration_time: 5
   carry_over_slots_to_new_session: false
 intents:
-- check_human:
-    use_entities: true
-- open_hysa:
-    use_entities: true
-- start_savings_session:
-    use_entities: true
-- start_financial360_session:
-    use_entities: []
-- transfer_money:
-    use_entities: []
-- inform:
-    use_entities: true
-- pay_cc:
-    use_entities: []
-- greet:
-    use_entities: true
-- goodbye:
-    use_entities: true
-- affirm:
-    use_entities: true
-- deny:
-    use_entities: true
-- thankyou:
-    use_entities: true
-- ask_transfer_charge:
-    use_entities: true
-- search_transactions:
-    use_entities: []
-- check_balance:
-    use_entities:
-    - account_type
-    - credit_card
-- check_earnings:
-    use_entities: []
-- request_names:
-    use_entities: true
-- check_recipients:
-    use_entities: true
-- out_of_scope:
-    use_entities: true
-- session_start:
-    use_entities: true
-- restart:
-    use_entities: true
-- trigger_handoff:
-    use_entities: true
-- handoff:
-    use_entities: true
-- human_handoff:
-    use_entities: true
-- help:
-    use_entities: true
-- nlu_fallback:
-    use_entities: true
-- prompt:
-    use_entities: true
-- mx_accountbalance:
-    use_entities: true
-- financial360_questions:
-    use_entities: []
-- startSession:
-    use_entities: true
+  - check_human:
+      use_entities: true
+  - open_hysa:
+      use_entities: true
+  - start_savings_session:
+      use_entities: true
+  - start_financial360_session:
+      use_entities: []
+  # - transfer_money:
+  #     use_entities: []
+  - inform:
+      use_entities: true
+  # - pay_cc:
+  #     use_entities: []
+  - greet:
+      use_entities: true
+  - goodbye:
+      use_entities: true
+  - affirm:
+      use_entities: true
+  - deny:
+      use_entities: true
+  - thankyou:
+      use_entities: true
+  # - ask_transfer_charge:
+  #     use_entities: true
+  # - search_transactions:
+  #     use_entities: []
+  - search_mx_transactions:
+      use_entities: []
+  # - check_balance:
+  #     use_entities:
+  #       - account_type
+  #       - credit_card
+  # - check_earnings:
+  #     use_entities: []
+  - request_names:
+      use_entities: true
+  # - check_recipients:
+  #     use_entities: true
+  - out_of_scope:
+      use_entities: true
+  - session_start:
+      use_entities: true
+  - restart:
+      use_entities: true
+  - trigger_handoff:
+      use_entities: true
+  - handoff:
+      use_entities: true
+  - human_handoff:
+      use_entities: true
+  - help:
+      use_entities: true
+  - nlu_fallback:
+      use_entities: true
+  - prompt:
+      use_entities: true
+  - mx_accountbalance:
+      use_entities: true
+  - financial360_questions:
+      use_entities: []
+  - startSession:
+      use_entities: true
+  - start_others_session:
+      use_entities: []
+  - lifeInsuranceStartSession:
+      use_entities: true
+  - lifeInsurance_howMuch:
+      use_entities: []
+  - lifeInsurance_wholeOrTerm:
+      use_entities: []
+  - lifeInsurance_beneficiary:
+      use_entities: []
+  - lifeInsurance_purpose_payoffHouse:
+      use_entities: []
+  - lifeInsurance_purpose_family:
+      use_entities: []
+  - lifeInsurance_purpose_legacy:
+      use_entities: []
+  - lifeInsurance_purpose_all:
+      use_entities: []
+  - public_yoli:
+      use_entities: true
+  - start_investing_session:
+      use_entities: []
+  - start_retirement_session:
+      use_entities: []
+  - retirement_session_personal:
+      use_entities: []
+  - start_budgeting_session:
+      use_entities: []
+  - start_debt_reduction_session:
+      use_entities: []
+  - start_insurance_session:
+      use_entities: []
+  - start_lifeEvents_session:
+      use_entities: []
+  - general_guidance:
+      use_entities: []
+  - investment_how_much:
+      use_entities: []
+  - investment_types:
+      use_entities: []
+  - investment_employer_match:
+      use_entities: []
+  - investment_left_job:
+      use_entities: []
+  - investment_borrow:
+      use_entities: []
+  - for_business:
+      use_entities: []
+  - knowledge_question:
+      use_entities: []
 entities:
-- amount-of-money
-- credit_card
-- payment_date
-- vendor_name
-- time
-- PERSON
-- number
-- account_type
-- handoff_to
-- search_type
-- timeline
-- userName
-- userId
+  - amount-of-money
+  - credit_card
+  - payment_date
+  - vendor_name
+  - time
+  - PERSON
+  - number
+  - account_type
+  - handoff_to
+  - search_type
+  - timeline
+  - userName
+  - userId
+  - email
+  - how_many_children
+  - mxUser
 slots:
   userName:
     type: rasa.shared.core.slots.TextSlot
@@ -89,6 +144,16 @@ slots:
     influence_conversation: false
   userId:
     type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  email:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  mxUser:
+    type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
     influence_conversation: false
@@ -174,7 +239,7 @@ slots:
     influence_conversation: false
   payment_amount_type:
     type: rasa.shared.core.slots.AnySlot
-    initial_value: ''
+    initial_value: ""
     auto_fill: true
     influence_conversation: false
   previous_form_name:
@@ -228,6 +293,11 @@ slots:
     auto_fill: true
     influence_conversation: false
   savings_amount_of_money:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: false
+  budgeting_amount_of_money:
     type: rasa.shared.core.slots.AnySlot
     initial_value: null
     auto_fill: true
@@ -293,568 +363,828 @@ slots:
     auto_fill: true
     influence_conversation: false
   haveLifeInsurance:
-    type: rasa.shared.core.slots.AnySlot
+    type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
-    influence_conversation: false
+    influence_conversation: true
+  mortgage_amount:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
+  annual_salary:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
+  cumulative_debts:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
+  how_many_children:
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
 responses:
   utter_out_of_scope:
-  - text: Sorry, I'm not sure how to respond to that. Type "help" for assistance.
+    - text: Sorry, I'm not sure how to respond to that. Type "help" for assistance.
   utter_ask_transfer_money_form_amount-of-money:
-  - text: How much money do you want to transfer?
+    - text: How much money do you want to transfer?
   utter_ask_transfer_money_form_PERSON:
-  - text: Who do you want to transfer money to?
+    - text: Who do you want to transfer money to?
   utter_goodbye:
-  - text: Bye
+    - text: Bye
   utter_noworries:
-  - text: You're welcome :)
+    - text: You're welcome :)
   utter_transfer_complete:
-  - text: Successfully transferred {currency}{amount-of-money} to {PERSON}.
+    - text: Successfully transferred {currency}{amount-of-money} to {PERSON}.
   utter_transfer_charge:
-  - text: You are entitled to six transfers within a statement cycle before being charged. For subsequent transfers you will be charged {currency}10 per transaction.
+    - text: You are entitled to six transfers within a statement cycle before being charged. For subsequent transfers you will be charged {currency}10 per transaction.
   utter_ask_cc_payment_form_amount-of-money:
-  - text: How much do you want to pay?
+    - text: How much do you want to pay?
   utter_ask_cc_payment_form_credit_card:
-  - text: Towards which credit card account do you want to make a payment?
+    - text: Towards which credit card account do you want to make a payment?
   utter_ask_cc_payment_form_time:
-  - text: For which date would you like to schedule the payment?
+    - text: For which date would you like to schedule the payment?
   utter_ask_transaction_search_form_vendor_name:
-  - text: For which vendor do you want to see transactions?  e.g Starbucks, Target, Amazon
+    - text: For which vendor do you want to see transactions?  e.g Starbucks, Target, Amazon
   utter_ask_transaction_search_form_time:
-  - text: In which timeframe would you like to search for transactions?
+    - text: In which timeframe would you like to search for transactions?
+  utter_ask_mx_transactions_search_form_time:
+    - text: In which timeframe would you like to search for transactions? week or month?
+  utter_mx_transactions:
+    - text: "Here is what you spend last {time} ${mx_transaction}"
   utter_ask_transaction_search_form_search_type:
-  - buttons:
-    - payload: /inform{"search_type":"deposit"}'
-      title: Incoming (earnings)
-    - payload: /inform{"search_type":"spend"}'
-      title: Outgoing (spending)
-    text: Would you like to search incoming or outgoing transactions?
+    - buttons:
+        - payload: /inform{"search_type":"deposit"}'
+          title: Incoming (earnings)
+        - payload: /inform{"search_type":"spend"}'
+          title: Outgoing (spending)
+      text: Would you like to search incoming or outgoing transactions?
   utter_no_payment_amount:
-  - text: Sorry, I don't understand that payment amount.
+    - text: Sorry, I don't understand that payment amount.
   utter_no_paymentdate:
-  - text: Sorry, that is not a valid payment date.
+    - text: Sorry, that is not a valid payment date.
   utter_no_creditcard:
-  - text: Sorry, that is not a valid credit card account to make payments towards.
+    - text: Sorry, that is not a valid credit card account to make payments towards.
   utter_no_vendor_name:
-  - text: Sorry, that's not a recognized vendor.
+    - text: Sorry, that's not a recognized vendor.
   utter_no_transactdate:
-  - text: Sorry, that's not a recognized time frame.
+    - text: Sorry, that's not a recognized time frame.
   utter_cc_pay_scheduled:
-  - text: Payment of {currency}{amount-of-money}{payment_amount_type} towards your {credit_card} account scheduled to be paid at {time_formatted}.
+    - text: Payment of {currency}{amount-of-money}{payment_amount_type} towards your {credit_card} account scheduled to be paid at {time_formatted}.
   utter_searching_spend_transactions:
-  - text: Searching transactions{vendor_name} between {start_time_formatted} and {end_time_formatted}...
+    - text: Searching transactions{vendor_name} between {start_time_formatted} and {end_time_formatted}...
   utter_found_spend_transactions:
-  - text: I found {numtransacts} transactions{vendor_name} totalling {currency}{total}.
+    - text: I found {numtransacts} transactions{vendor_name} totalling {currency}{total}.
   utter_searching_deposit_transactions:
-  - text: Searching deposits made to your account between {start_time_formatted} and {end_time_formatted}...
+    - text: Searching deposits made to your account between {start_time_formatted} and {end_time_formatted}...
   utter_found_deposit_transactions:
-  - text: I found {numtransacts} deposits made to your account totalling {currency}{total}
+    - text: I found {numtransacts} deposits made to your account totalling {currency}{total}
   utter_ask_rephrase:
-  - text: I didn't quite understand that. Can you rephrase?
+    - text: I didn't quite understand that. Can you rephrase?
   utter_ok:
-  - text: 👍
+    - text: 👍
   utter_ask_continue:
-  - text: Would you like to continue?
+    - text: Would you like to continue?
   utter_default:
-  - text: I didn't quite understand that. Could you rephrase?
+    - text: I didn't quite understand that. Could you rephrase?
   utter_ask_cc_payment_form_AA_CONTINUE_FORM:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No, cancel the transaction
-    text: Would you like to continue scheduling the credit card payment?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No, cancel the transaction
+      text: Would you like to continue scheduling the credit card payment?
   utter_ask_transfer_money_form_AA_CONTINUE_FORM:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No, cancel the transfer
-    text: Would you like to continue scheduling the money transfer?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No, cancel the transfer
+      text: Would you like to continue scheduling the money transfer?
   utter_ask_transaction_search_form_AA_CONTINUE_FORM:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No, cancel the search
-    text: Would you like to continue the transaction search?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No, cancel the search
+      text: Would you like to continue the transaction search?
   utter_ask_cc_payment_form_zz_confirm_form:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No, cancel the transaction
-    text: Would you like to schedule a payment of {currency}{amount-of-money}{payment_amount_type} towards your {credit_card} account for {time_formatted}?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No, cancel the transaction
+      text: Would you like to schedule a payment of {currency}{amount-of-money}{payment_amount_type} towards your {credit_card} account for {time_formatted}?
   utter_ask_transfer_money_form_zz_confirm_form:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No, cancel the transaction
-    text: Would you like to transfer {currency}{amount-of-money} to {PERSON}?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No, cancel the transaction
+      text: Would you like to transfer {currency}{amount-of-money} to {PERSON}?
   utter_cc_pay_cancelled:
-  - text: Credit card account payment cancelled.
+    - text: Credit card account payment cancelled.
   utter_transfer_cancelled:
-  - text: Transfer cancelled.
+    - text: Transfer cancelled.
   utter_transaction_search_cancelled:
-  - text: Transaction search cancelled.
+    - text: Transaction search cancelled.
   utter_account_balance:
-  - text: Your bank account balance is {currency}{init_account_balance}.
+    - text: Your bank account balance is {currency}{init_account_balance}.
   utter_changed_account_balance:
-  - text: Your bank account balance was {currency}{init_account_balance} and is now {currency}{account_balance} after transfers and payments.
+    - text: Your bank account balance was {currency}{init_account_balance} and is now {currency}{account_balance} after transfers and payments.
   utter_unknown_recipient:
-  - text: Sorry, {PERSON} is not in your list of known recipients.
+    - text: Sorry, {PERSON} is not in your list of known recipients.
   utter_insufficient_funds:
-  - text: Sorry, you don't have enough money to do that!
+    - text: Sorry, you don't have enough money to do that!
   utter_insufficient_funds_specific:
-  - text: The {payment_amount_type} on your {credit_card} credit card is {amount-of-money}, so you have insufficient funds to pay it off.
+    - text: The {payment_amount_type} on your {credit_card} credit card is {amount-of-money}, so you have insufficient funds to pay it off.
   utter_credit_card_balance:
-  - text: The current balance for your {credit_card} account is {currency}{credit_card_balance}.
+    - text: The current balance for your {credit_card} account is {currency}{credit_card_balance}.
   utter_nothing_due:
-  - text: Your don't owe any money on your {credit_card} credit card bill.
+    - text: Your don't owe any money on your {credit_card} credit card bill.
   utter_recipients:
-  - text: These are your known recpients to whom you can send money:{formatted_recipients}
+    - text: These are your known recpients to whom you can send money:{formatted_recipients}
   utter_greet:
-  - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
-    text: Hi! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
-  - text: Hola, I am Yoli, your smart financial assistant.
+    - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
+      text: Hi! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
+    - text: Hola, I am Yoli, your smart financial assistant.
   utter_greet_user:
-  - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
-    text: Hi {userId} {userName}! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
-  - text: Hola {userId} {userName}, I am Yoli, your smart financial assistant.
+    - image: https://media.giphy.com/media/26xBwdIuRJiAIqHwA/giphy.gif
+      text: Hi {userId} {userName}! I'm Yoli your financial assistant, here to help you make smarter financial decisions.
+    - text: Hola {userId} {userName}, I am Yoli, your smart financial assistant.
+  utter_startSession:
+    - buttons:
+        - payload: /start_savings_session
+          title: Savings
+        - payload: /start_investing_session
+          title: Investing
+        - payload: /start_budgeting_session
+          title: Budgeting
+        - payload: /start_financial360_session
+          title: Financial 360
+        - payload: /start_others_session
+          title: Something else
+      text: What can I help you with today? I can answer questions about,
+  utter_afterSession:
+    - buttons:
+        - payload: /start_savings_session
+          title: Savings
+        - payload: /start_investing_session
+          title: Investing
+        - payload: /start_budgeting_session
+          title: Budgeting
+        - payload: /start_financial360_session
+          title: Financial 360
+        - payload: /start_others_session
+          title: Something else
+      text: I can still answer questions about these, or tell me what you need.
   utter_ask_handoff:
-  - text: It looks like you want to be transferred to a human agent.
+    - text: It looks like you want to be transferred to a human agent.
   utter_handoff:
-  - text: Alright, I'll try to transfer you.
+    - text: Alright, I'll try to transfer you.
   utter_wouldve_handed_off:
-  - text: If you were talking to me via chatroom, I would have handed you off to {handoffhost}.
+    - text: If you were talking to me via chatroom, I would have handed you off to {handoffhost}.
   utter_no_handoff:
-  - text: Since you haven't configured a host to hand off to, I can't send you anywhere!
+    - text: Since you haven't configured a host to hand off to, I can't send you anywhere!
   utter_ask_whatelse:
-  - text: What else can I help you with?
+    - text: What else can I help you with?
   utter_bot:
-  - text: I'm a virtual assistant made with Rasa.
+    - text: I'm a virtual assistant made with Rasa.
   utter_help:
-  - text: |-
-      I can help you with your financial accounts. 
-      You can ask me things like: 
-      - What's my account balance? 
-      - Pay off my credit card 
-      - What did I spend at Target last month? 
-      - I need to transfer money
+    - text: |-
+        I can help you with your financial accounts. 
+        You can ask me things like: 
+        - What's my account balance? 
+        - Pay off my credit card 
+        - What did I spend at Target last month? 
+        - I need to transfer money
   utter_ask_first_name:
-  - text: What is your first name?
+    - text: What is your first name?
   utter_submit:
-  - text: Ok, Thanks!
+    - text: Ok, Thanks!
   utter_full_name:
-  - image: https://media.giphy.com/media/YoeipjdqpYPvcTGnMq/giphy-downsized.gif
-    text: Great to meet you  {first_name}!
+    - image: https://media.giphy.com/media/YoeipjdqpYPvcTGnMq/giphy-downsized.gif
+      text: Great to meet you  {first_name}!
   utter_start_savings_session:
-  - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
-    text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
+    - image: https://media.giphy.com/media/SsNRdueeih1mQCYWV5/giphy-downsized.gif
+      text: Let's get you saving so an emergency doesn't become a crisis. An emergency savings is simply a savings account that kept in a High Yield Savings Account, → a.k.a. HYSA. This types of savings accounts pays you interest for holding your cash. 📌 You should aim to have 3-6 months of your monthly salary saved but we get it, that can be a lot, so get started with a goal of $1000.
   utter_start_financial360_session:
-  - buttons:
-    - payload: /financial360_questions
-      title: Let's do this!
-    - payload: /deny
-      title: I'll do this later.
-    text: Building wealth starts with understanding where you're at and where you want to go. Think of a financial 360 as a way to build your personalized map to building wealth. We are going to ask some questions based on our 5 pillars of building wealth and give you personalized recommendations. 
+    - buttons:
+        - payload: /financial360_questions
+          title: Let's do this!
+        - payload: /deny
+          title: I'll do this later.
+      text: Building wealth starts with understanding where you're at and where you want to go. Think of a financial 360 as a way to build your personalized map to building wealth. We are going to ask some questions based on our 5 pillars of building wealth and give you personalized recommendations.
+  utter_others_session:
+    - text: Alright, tell me what else I can help you with.
+  utter_accountbalance:
+    - buttons:
+        - payload: /affirm
+          title: Yes!
+        - payload: /deny
+          title: Not really.
+      text: Do you want to check how much you have in your bank account?
   utter_ask_isMarried:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Are you married?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Are you married?
   utter_ask_haveChildren:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have children?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have children?
   utter_ask_haveBudget:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have and use a budget? 
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have and use a budget?
   utter_ask_haveSavings:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have a savings with at least $1000?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have a savings with at least $1000?
   utter_ask_checkCredit:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you regularly track your credit score and credit history?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you regularly track your credit score and credit history?
   utter_ask_haveDebt:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you feel overwhelmed by your debt? 
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you feel overwhelmed by your debt?
   utter_ask_have401K:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Are you currently contributing to your 401K?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Are you currently contributing to your 401K?
   utter_ask_haveOld401K:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have a 401K from an old job that you haven't rolled-over?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have a 401K from an old job that you haven't rolled-over?
   utter_ask_haveIRA:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have an IRA?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have an IRA?
   utter_ask_haveBrokerage:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have a brokerage account?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have a brokerage account?
   utter_ask_haveRenters:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have home owners or renters insurance?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have home owners or renters insurance?
   utter_ask_haveLifeInsurance:
-  - buttons:
-    - payload: /affirm
-      title: Yes
-    - payload: /deny
-      title: No
-    text: Do you have independent life insurance (not attached to your job?
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you have independent life insurance (not attached to your job?
   utter_savings_session2:
-  - image: 'https://media.giphy.com/media/1YZQJBcZWgdaoUoVRd/giphy-downsized.gif'
-    text: So how much should be in your savings? Aim to have 3-6 months of your monthly salary saved (6-12 if you have children) but we recommend getting started with a goal of $1000.
+    - image: "https://media.giphy.com/media/1YZQJBcZWgdaoUoVRd/giphy-downsized.gif"
+      text: So how much should be in your savings? Aim to have 3-6 months of your monthly salary saved (6-12 if you have children) but we recommend getting started with a goal of $1000.
   utter_open_hysa:
-  - text: 'Please click this link: https://www.marcus.com/us/en'
+    - text: "Please click this link: https://www.marcus.com/us/en"
   utter_mx_accountbalance:
-  - text: 'Hey {first_name}, {userName} here is your account balance ${mx_balance}.'
+    - text: "Hey {userName}, here is your account balance ${mx_balance}."
+  utter_mx_noAccount:
+    - text: "You haven't linked your bank account yet! Please sign up for wealthbuild to manage your wealth, if you've already signed up then go to your dashboard and link your bank!"
   utter_ask_savings_amount_of_money:
-  - text: How much do you want to start saving?
+    - text: How much do you want to start saving?
   utter_ask_savings_timeline:
-  - buttons:
-    - payload: '/inform{{"timeline": 3}}'
-      title: 3 Months
-    - payload: '/inform{{"timeline": 6}}'
-      title: 6 Months
-    - payload: '/inform{{"timeline": 12}}'
-      title: 12 Months
-    text: Great, so  how long many months do you need to save this amount?
+    - buttons:
+        - payload: '/inform{{"timeline": 3}}'
+          title: 3 Months
+        - payload: '/inform{{"timeline": 6}}'
+          title: 6 Months
+        - payload: '/inform{{"timeline": 12}}'
+          title: 12 Months
+      text: Great, so  how long many months do you need to save this amount?
   utter_savings_goal:
-  - text: Cool, so you will need to save {currency}{savings_goal_amount} a month to hit your goal.
+    - text: Cool, so you will need to save {currency}{savings_goal_amount} a month to hit your goal.
   utter_ask_nickname:
-  - text: Before we get started, what shall I call you?
+    - text: Before we get started, what shall I call you?
   utter_nickname:
-  - buttons:
-    - payload: /start_savings_session
-      title: Savings
-    - payload: /start_investing_session
-      title: Investing
-    - payload: /start_budgeting_session
-      title: Budgeting
-    - payload: /start_financial360_session
-      title: Financial 360
-    text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
+    - buttons:
+        - payload: /start_savings_session
+          title: Savings
+        - payload: /start_investing_session
+          title: Investing
+        - payload: /start_budgeting_session
+          title: Budgeting
+        - payload: /start_financial360_session
+          title: Financial 360
+        - payload: /start_others_session
+          title: Something else
+      text: Great to meet you {nickname}!  What can I help you with today? I can answer questions about,
   utter_savings_takeaction:
-  - buttons:
-    - payload: /open_hysa
-      title: Open a HYSA
-    - payload: /start_CD_session
-      title: Tell me more about a CD
-    text: Now you have a couple of choices, 1️⃣ If you already have a savings account, automate your transfer of {currency}{savings_goal_amount} from your main checking account; 2️⃣ If you don't have a savings, open up a HYSA or 3️⃣ open a CD if you have additional cash that is being saved for a specific goal (i.e. buying a house).
+    - buttons:
+        - payload: /open_hysa
+          title: Open a HYSA
+        - payload: /start_CD_session
+          title: Tell me more about a CD
+      text: Now you have a couple of choices, 1️⃣ If you already have a savings account, automate your transfer of {currency}{savings_goal_amount} from your main checking account; 2️⃣ If you don't have a savings, open up a HYSA or 3️⃣ open a CD if you have additional cash that is being saved for a specific goal (i.e. buying a house).
   utter_financial360:
-  - text: check this out https://www.mymoneymyfuture.co/
+    - text: check this out https://www.mymoneymyfuture.co/
+  utter_lifeInsurance_session:
+    - text: Hi {userName}, I am Yoli, I can help you with your life insurance questions.
+  utter_lifeInsurance_session2:
+    - buttons:
+        - payload: /lifeInsurance_howMuch
+          title: How Much Life Insurance do I need?
+        - payload: /lifeInsurance_wholeOrTerm
+          title: Should I get Whole Life or Term Life?
+        - payload: /lifeInsurance_beneficiary
+          title: Who should be my beneficiary?
+      text: What do you want more information about?
+  utter_lifeInsurance_howMuch:
+    - text: The rule of thumb is that you should have a minimum of 10x your annual salary but we know there are many more variables beyond simply providing income to your family.
+  utter_lifeInsurance_howMuch1:
+    - buttons:
+        - payload: /lifeInsurance_purpose_payoffHouse
+          title: To pay off my house
+        - payload: /lifeInsurance_purpose_family
+          title: To take care of my family
+        - payload: /lifeInsurance_purpose_legacy
+          title: To create a legacy
+        - payload: /lifeInsurance_purpose_all
+          title: All of the Above
+      text: Let's get a little deeper, what is the main purpose for you getting life insurance?
+  utter_lifeInsurance_purpose_all:
+    - text: Great, so let's get to the numbers.
+  utter_lifeInsurance_estimate:
+    - text: "Based on your goals, your debts and salary, your recommended amount of life insurance should be approximately ${estimate}. This number is based on your mortgage and balance, 10x your current salary, and $75K for each of your children to build intergenerational wealth."
+  utter_ask_mortgage_amount:
+    - text: How much do you owe on your mortgage?
+  utter_ask_annual_salary:
+    - text: What is annual salary?
+  utter_ask_cumulative_debts:
+    - text: Cumulative Debts?
+  utter_ask_how_many_children:
+    - text: How many children under 18 do you have?
+  utter_start_investing_session:
+    - text: Great, Investing an important part of building wealth.
+  utter_start_investing_session2:
+    - text: Rembmer, it's not how much you invest, it's how logn you invest. Let compound interest work for you.
+  utter_start_investing_session3:
+    - buttons:
+        - payload: /start_retirement_session
+          title: Retirement
+        - payload: /start_ira_session
+          title: IRA
+        - payload: /start_brokerage_session
+          title: Brokerage
+        - payload: /start_crypto_session
+          title: Crypto
+        - payload: /deny
+          title: Not sure
+      text: What kind of investing are you interested in?
+  utter_start_retirement_session:
+    - text: Ok. before getting into it, one question for you. Is this for you or for your business?
+  utter_start_401k_session1:
+    - text: Ok, great. Retirement accounts, generally include 401K's, 403b's and traditional IRA's.
+  utter_start_401k_session2:
+    - text: A 401(k) is a type of savings plan that is sponsored by an employer. If you are a freelancer or unemployed, there are other ""retirement"" plan options.
+  utter_start_401k_session3:
+    - text: Retirement accounts are are tax-deferred-meaning it can lower your annual taxable income. You are taxed on the money when you withdraw it in retirement.
+  utter_start_401k_session4:
+    - text: A 403b is a kind of retirement plan for non-profits and educational institutions. It is similar to a 401K.
+  utter_start_401k_session5:
+    - buttons:
+        - payload: /investment_how_much
+          title: How much should I invest?
+        - payload: /investment_types
+          title: What types of investments can I make?
+        - payload: /investment_employer_match
+          title: What's an employer match?
+        - payload: /investment_left_job
+          title: I just left my job, now what?
+        - payload: /investment_borrow
+          title: Can I borrow from my 401K
+      text: What question do you have about retirement accounts?
+  utter_investment_how_much:
+    - text: As a rule of thumb, people invest 15% of their income. If you have an employer match, make sure to invest enought to received the match.
+  utter_investment_types:
+    - text: The types of investments that can be made from a retirement account depend on the specific type of retirement account. Within an IRA you can invest in stocks, bonds, mutual funds, exchange-traded funds (ETFs), and annuities. In a 401(k) plan, the investment options are more limited and don't often include individual stocks. Generally yhou can buy mutual funds, target-date funds, Index funds or ETFs.
+  utter_investment_employer_match1:
+    - image: https://media.giphy.com/media/QSJflihoTLhXIzVjYU/giphy-downsized-large.gif
+      text: An employee match is like free money! Yes and thank you!
+  utter_investment_employer_match2:
+    - text: It's when an employer offers to ""match"" your contribution to your retirement account.
+  utter_investment_employer_match3:
+    - text: For example, if an employer offers a 50% match, it means that for every dollar you contribute, the employer will match 50 cents. As your HR or Benefits person about your match.
+  utter_investment_employer_match4:
+    - text: Don't leave money on the table.
+  utter_investment_left_job1:
+    - text: Congrats on your next adventure. If you have a 401K or 403B, you can keep it with the current administrator or you can roll it over to an IRA.
+  utter_investment_left_job2:
+    - text: Remeber, when you roll it over, you have the option to roll it over to a ROTH IRA (a.k.a. a back-door roth).
+  utter_investment_left_job3:
+    - text: Once you roll it over, you have to choose an investment- stocks, mutual funds, ETF's, or bonds.
+  utter_investment_borrow:
+    - text: Yes, althought it's not a good idea to borrow against your future.
+  utter_budgeting_session:
+    - text: Budgeting can be overwhelming, which is why we recommend using an easy budgeting hack called the 50/20/30 rule.
+  utter_budgeting_session2:
+    - text: This budgeting rule works for people who make $1K or $0K a month.
+  utter_budgeting:
+    - text: Great, here is what your simple budget should look like.
+  utter_budgeting2:
+    - text: You should spend no more than $2500 a month on "Fixed" costs like rent, morgage, food and basic bills. You can spend $1500 on "Flex" costs like shopping, eating out, entertainment, basically whatever you want. $1000 or 20% should be put towards savings, investing or paying down debt.
+  utter_budgeting3:
+    - text: The key is to track your spending across accounts. Connect your accounts to keep track in the dashboard.
+  utter_ask_budgeting_amount_of_money:
+    - text: Let's get your numbers for you. How much do you bring home a month, aka, net pay?
+  utter_debt_session:
+    - text: Paying down debt is a matter of having a clear plan.
+  utter_debt_session2:
+    - text: Start paying down debt by identifying all your high interest obligations.
+  utter_debt_session3:
+    - text: Download our Debt Reduction spreadsheet here.
+  utter_insurance_session:
+    - text: Great, let's talk about insurance.
+  utter_insurance_session2:
+    - buttons:
+        - payload: /lifeInsuranceStartSession
+          title: Life Insurance
+        - payload: /start_ira_session
+          title: Auto Insurance
+        - payload: /start_brokerage_session
+          title: Renters Insurance
+      text: What type of insurance are you interested in?
+  utter_retirement_unhappy_deny1:
+    - text: No worries, we got you! :)
+  utter_retirement_unhappy_deny2:
+    - buttons:
+        - payload: /start_savings_session
+          title: Savings
+        - payload: /start_investing_session
+          title: Investing
+        - payload: /start_budgeting_session
+          title: Budgeting
+        - payload: /start_financial360_session
+          title: Financial 360
+        - payload: /start_lifeEvents_session
+          title: Life Events
+      text: We are good at answering questions about specific topics like budgeting, savings, investing, and even life events. Are any of these of interest?
+  utter_retirement_unhappy_general_guidance:
+    - text: ok, why don't we do a quick financial 360, this will help to let us give you better advice.
+  utter_retirement_business_session:
+    - text: Ok, there are several options for freelancers and small business owners. Most of the options depend on the number of employees you have.
 actions:
-- action_session_start
-- action_restart
-- action_show_balance
-- action_show_recipients
-- action_show_transfer_charge
-- action_handoff
-- action_handoff_options
-- action_pay_cc
-- action_transfer_money
-- action_transaction_search
-- action_ask_transaction_search_form_zz_confirm_form
-- action_ask_last_name
-- action_switch_forms_ask
-- action_switch_forms_deny
-- action_switch_forms_affirm
-- action_switch_back_ask
-- action_insert_name
-- action_mx_accountbalance
-- action_savings_goal_amount
-- action_savings_form
-- action_greet
-- action_financial360
-- validate_cc_payment_form
-- validate_transfer_money_form
-- validate_transaction_search_form
+  - action_session_start
+  - action_restart
+  - action_show_balance
+  - action_show_recipients
+  - action_show_transfer_charge
+  - action_handoff
+  - action_handoff_options
+  - action_pay_cc
+  - action_transfer_money
+  - action_transaction_search
+  - action_ask_transaction_search_form_zz_confirm_form
+  - action_ask_last_name
+  - action_switch_forms_ask
+  - action_switch_forms_deny
+  - action_switch_forms_affirm
+  - action_switch_back_ask
+  - action_insert_name
+  - action_mx_accountbalance
+  - action_savings_goal_amount
+  - action_savings_form
+  - action_greet
+  - action_start_session_afterGreet
+  - action_start_nickname_form
+  - action_financial360
+  - action_lifeInsurance_session
+  - action_lifeInsurance_estimate
+  - action_mx_transactions_search
+  - action_retirement_unhappy_session
+  - action_check_mxaccount
+  - action_call_haystack
+  - action_langchain
+  - action_follow_langchain
+  - action_hub_langchain
+  - action_general_langchain
+  - action_hub_follow_langchain
+  - validate_cc_payment_form
+  - validate_transfer_money_form
+  - validate_transaction_search_form
 forms:
+  budgeting_form:
+    required_slots:
+      budgeting_amount_of_money:
+        - entity: amount-of-money
+          type: from_entity
+        - intent: inform
+          type: from_text
+  lifeInsurance_howMuch_form:
+    required_slots:
+      mortgage_amount:
+        - entity: amount-of-money
+          type: from_entity
+        - intent: inform
+          type: from_text
+      annual_salary:
+        - entity: amount-of-money
+          type: from_entity
+        - intent: inform
+          type: from_text
+      cumulative_debts:
+        - entity: amount-of-money
+          type: from_entity
+        - intent: inform
+          type: from_text
+      how_many_children:
+        - entity: how_many_children
+          type: from_entity
+        - intent: inform
+          type: from_text
   financial360_form:
     required_slots:
       isMarried:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveChildren:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveBudget:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveSavings:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       checkCredit:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveDebt:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       have401K:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveOld401K:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveIRA:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveBrokerage:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveRenters:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
       haveLifeInsurance:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
   savings_form:
     required_slots:
       savings_amount_of_money:
-      - entity: amount-of-money
-        type: from_entity
-      - intent: inform
-        type: from_text
+        - entity: amount-of-money
+          type: from_entity
+        - intent: inform
+          type: from_text
       savings_timeline:
-      - entity: timeline
-        type: from_entity
+        - entity: timeline
+          type: from_entity
   name_form:
     required_slots:
       first_name:
-      - type: from_text
+        - type: from_text
       last_name:
-      - type: from_text
+        - type: from_text
   nickname_form:
     required_slots:
       nickname:
-      - type: from_text
+        - entity: PERSON
+          type: from_entity
   cc_payment_form:
     required_slots:
       AA_CONTINUE_FORM:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
-      - intent:
-        - inform
-        - cc_payment_form
-        type: from_text
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
+        - intent:
+            - inform
+            - cc_payment_form
+          type: from_text
       amount-of-money:
-      - entity: amount-of-money
-        not_intent:
-        - check_balance
-        - check_earnings
-        type: from_entity
-      - entity: number
-        not_intent:
-        - check_balance
-        - check_earnings
-        type: from_entity
-      - intent:
-        - inform
-        - cc_payment_form
-        type: from_text
+        - entity: amount-of-money
+          not_intent:
+            - check_balance
+            - check_earnings
+          type: from_entity
+        - entity: number
+          not_intent:
+            - check_balance
+            - check_earnings
+          type: from_entity
+        - intent:
+            - inform
+            - cc_payment_form
+          type: from_text
       credit_card:
-      - entity: credit_card
-        type: from_entity
-      - intent:
-        - inform
-        - cc_payment_form
-        type: from_text
+        - entity: credit_card
+          type: from_entity
+        - intent:
+            - inform
+            - cc_payment_form
+          type: from_text
       time:
-      - entity: time
-        type: from_entity
-      - intent:
-        - inform
-        - cc_payment_form
-        type: from_text
+        - entity: time
+          type: from_entity
+        - intent:
+            - inform
+            - cc_payment_form
+          type: from_text
       zz_confirm_form:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
-      - intent:
-        - inform
-        - cc_payment_form
-        type: from_text
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
+        - intent:
+            - inform
+            - cc_payment_form
+          type: from_text
   transfer_money_form:
     required_slots:
       AA_CONTINUE_FORM:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
-      - intent:
-        - inform
-        - transfer_money_form
-        type: from_text
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
+        - intent:
+            - inform
+            - transfer_money_form
+          type: from_text
       PERSON:
-      - entity: PERSON
-        type: from_entity
-      - intent:
-        - inform
-        - transfer_money_form
-        type: from_text
+        - entity: PERSON
+          type: from_entity
+        - intent:
+            - inform
+            - transfer_money_form
+          type: from_text
       amount-of-money:
-      - entity: amount-of-money
-        not_intent:
-        - check_balance
-        - check_earnings
-        type: from_entity
-      - entity: number
-        not_intent:
-        - check_balance
-        - check_earnings
-        type: from_entity
-      - intent:
-        - inform
-        - transfer_money_form
-        type: from_text
+        - entity: amount-of-money
+          not_intent:
+            - check_balance
+            - check_earnings
+          type: from_entity
+        - entity: number
+          not_intent:
+            - check_balance
+            - check_earnings
+          type: from_entity
+        - intent:
+            - inform
+            - transfer_money_form
+          type: from_text
       zz_confirm_form:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
-      - intent:
-        - inform
-        - transfer_money_form
-        type: from_text
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
+        - intent:
+            - inform
+            - transfer_money_form
+          type: from_text
   transaction_search_form:
     required_slots:
       AA_CONTINUE_FORM:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
-      - intent:
-        - inform
-        - transaction_search_form
-        type: from_text
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
+        - intent:
+            - inform
+            - transaction_search_form
+          type: from_text
       search_type:
-      - intent: search_transactions
-        type: from_trigger_intent
-        value: spend
-      - intent: check_earnings
-        type: from_trigger_intent
-        value: deposit
-      - entity: search_type
-        type: from_entity
+        - intent: search_transactions
+          type: from_trigger_intent
+          value: spend
+        - intent: check_earnings
+          type: from_trigger_intent
+          value: deposit
+        - entity: search_type
+          type: from_entity
       time:
-      - entity: time
-        type: from_entity
-      - intent:
-        - inform
-        - transaction_search_form
-        type: from_text
+        - entity: time
+          type: from_entity
+        - intent:
+            - inform
+            - transaction_search_form
+          type: from_text
       zz_confirm_form:
-      - intent: affirm
-        type: from_intent
-        value: yes
-      - intent: deny
-        type: from_intent
-        value: no
-      - intent:
-        - inform
-        - transaction_search_form
-        type: from_text
+        - intent: affirm
+          type: from_intent
+          value: yes
+        - intent: deny
+          type: from_intent
+          value: no
+        - intent:
+            - inform
+            - transaction_search_form
+          type: from_text
+  mx_transactions_search_form:
+    required_slots:
+      time:
+        - entity: time
+          type: from_entity
+        - intent:
+            - inform
+            - transaction_search_form
+          type: from_text
 e2e_actions: []

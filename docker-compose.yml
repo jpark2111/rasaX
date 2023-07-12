@@ -3,20 +3,25 @@ version: "3.4"
 services:
   rasa:
     restart: always
-    image: "jpark2111/wb_rasa:latest-SG"
+    image: "jpark2111/wb_yoli:mvp"
+    user: root
     ports:
-      - 8080:5005
+      - 5005:5005
     volumes:
       - ./:/app
     depends_on:
       - duckling
       - app
-    public: true
   app:
     restart: always
-    image: "jpark2111/wealthbuild_rasa_action_server:latest-SG"
+    image: "jpark2111/wb_rasa_action:test"
     environment:
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      TEMPLATE_ID: ${TEMPLATE_ID}
+      API_HOST: ${API_HOST}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      HUGGINGFACEHUB_API_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
+      HUGGINGFACEHUB_ADMIN_API_TOKEN: ${HUGGINGFACEHUB_ADMIN_API_TOKEN}
     ports:
       - 5055:5055
   duckling:

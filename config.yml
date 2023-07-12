@@ -12,13 +12,15 @@ pipeline:
   - name: DIETClassifier
     epochs: 100
   - name: FallbackClassifier
-    threshold: 0.7
+    threshold: 0.8
+    ambiguity_threshold: 0.1
   - name: DucklingEntityExtractor
     url: http://duckling:8000
+    # url: http://localhost:8000
     dimensions:
-    - amount-of-money
-    - time
-    - number
+      - amount-of-money
+      - time
+      - number
   - name: SpacyNLP
     model: "en_core_web_md"
     case_sensitive: false
@@ -31,10 +33,10 @@ pipeline:
     dimensions: ["PERSON"]
   - name: EntitySynonymMapper
 policies:
-- name: AugmentedMemoizationPolicy
-- name: TEDPolicy
-  epochs: 40
-- name: RulePolicy
-  core_fallback_threshold: 0.4
-  core_fallback_action_name: "action_default_fallback"
-  enable_fallback_prediction: True
+  - name: AugmentedMemoizationPolicy
+  - name: TEDPolicy
+    epochs: 100
+  - name: RulePolicy
+    core_fallback_threshold: 0.2
+    core_fallback_action_name: "action_default_fallback"
+    enable_fallback_prediction: True
